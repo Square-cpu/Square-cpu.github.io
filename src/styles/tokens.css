@@ -1,10 +1,15 @@
 :root {
   color-scheme: dark;
-  --color-bg: #1d1c1a;
-  --color-surface: #252420;
-  --color-text: #eae7df;
-  --color-muted: #b0ada4;
-  --color-border: #4b4942;
+  --color-bg: #11110f;
+  --color-surface: #171714;
+  --color-surface-2: #1d1d19;
+  --color-text: #f0eee8;
+  --color-text-muted: #9f9c94;
+  /* Faint is decorative only; readable metadata uses muted. */
+  --color-text-faint: #6f6d67;
+  --color-muted: var(--color-text-muted);
+  --color-border: #2d2c28;
+  --color-border-strong: #46443e;
   --color-focus: #e1c98f;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -15,29 +20,44 @@
   --space-7: 3rem;
   --space-8: 4.5rem;
   --space-9: 7rem;
-  --gutter: clamp(var(--space-4), 5vw, var(--space-8));
-  --width-content: 76rem;
+  --space-section: clamp(6rem, 10vw, 10rem);
+  --space-content: clamp(1.5rem, 3vw, 3rem);
+  --space-page: clamp(3rem, 6vw, 6rem);
+  --space-ui: 0.75rem;
+  --gutter: clamp(1rem, 4vw, 4rem);
+  --grid-gap: clamp(1rem, 2vw, 2rem);
+  --width-content: 92rem;
   --width-reading: 42rem;
-  --font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --header-height: 4.5rem;
+  --font-body: 'Instrument Sans Variable', system-ui, sans-serif;
   --font-display: var(--font-body);
-  --font-mono: ui-monospace, 'Cascadia Code', 'SFMono-Regular', Consolas, monospace;
-  --text-small: 0.8125rem;
-  --text-body: 1rem;
-  --text-lead: clamp(1.1rem, 2vw, 1.4rem);
-  --text-heading: clamp(1.7rem, 4vw, 3rem);
-  --text-title: clamp(2.5rem, 7vw, 6rem);
-  --leading-body: 1.65;
-  --leading-heading: 1.12;
-  --radius-small: 0.2rem;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  --text-small: clamp(0.75rem, 0.7rem + 0.15vw, 0.875rem);
+  --text-body: clamp(1.0625rem, 1rem + 0.2vw, 1.1875rem);
+  --text-lead: clamp(1.2rem, 1rem + 0.8vw, 1.625rem);
+  --text-heading: clamp(2rem, 1.5rem + 2vw, 4.5rem);
+  --text-title: clamp(2.75rem, 1.5rem + 5vw, 7.5rem);
+  --text-index: clamp(1.875rem, 1rem + 4vw, 4.5rem);
+  --text-ui: 0.875rem;
+  --leading-body: 1.6;
+  --leading-heading: 1.08;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 7px;
+  --radius-small: var(--radius-xs);
   --border-thin: 1px;
-  --duration-fast: 160ms;
-  --duration-normal: 240ms;
-  --ease-standard: ease-out;
+  --motion-fast: 140ms;
+  --motion-normal: 280ms;
+  --motion-slow: 560ms;
+  --duration-fast: var(--motion-fast);
+  --duration-normal: var(--motion-normal);
+  --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
   --layer-header: 10;
   --layer-overlay: 100;
   --layer-skip: 200;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root { --duration-fast: 0ms; --duration-normal: 0ms; }
+  :root { --motion-fast: 0ms; --motion-normal: 0ms; --motion-slow: 0ms; }
 }

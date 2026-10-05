@@ -1,0 +1,8 @@
+---
+interface Props { number?: string; ruled?: boolean; }
+const { number, ruled = false } = Astro.props;
+---
+<p class:list={['eyebrow', 'section-label', { 'section-label--ruled': ruled }]}>
+  {number && <span>{number} <span aria-hidden="true">/</span></span>}
+  <span><slot /></span>
+</p>

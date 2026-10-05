@@ -1,24 +1,31 @@
 ---
 import { site, navigation } from '../../data/site';
-import { withBase } from '../../lib/paths';
+import { withBase, sectionCurrent } from '../../lib/paths';
 import ContactLinks from '../common/ContactLinks.astro';
+import SectionLabel from '../common/SectionLabel.astro';
 ---
-<header class="site-header shell">
-  <a class="identity" href={withBase()} aria-label={`${site.name} — Home`}>
-    <span class="full-name">Arthur Milander</span><span class="initials" aria-hidden="true">AM</span>
-  </a>
-  <button id="index-trigger" type="button" aria-haspopup="dialog" aria-controls="site-index" aria-expanded="false" hidden>INDEX</button>
-  <noscript><a href="#footer-index">INDEX</a></noscript>
+<header class="site-header">
+  <div class="header-inner shell">
+    <a class="identity" href={withBase()} aria-label={`${site.name} — Home`}>Arthur Milander</a>
+    <button id="index-trigger" type="button" aria-haspopup="dialog" aria-controls="site-index" aria-expanded="false" hidden>INDEX</button>
+    <noscript><a href="#footer-index">INDEX</a></noscript>
+  </div>
 </header>
 <dialog id="site-index" aria-labelledby="index-title">
   <div class="index-content shell">
     <div class="index-top"><h2 id="index-title" class="eyebrow">Site index</h2><button id="index-close" type="button" autofocus aria-label="Close site index">CLOSE <span aria-hidden="true">×</span></button></div>
     <nav aria-label="Main navigation">
       <ol>{navigation.map((item, index) => (
-        <li><a href={withBase(item.path)} aria-current={Astro.url.pathname === withBase(item.path) ? 'page' : undefined}><span class="eyebrow" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{item.label}</a></li>
+        <li>
+          <a href={withBase(item.path)} aria-current={sectionCurrent(Astro.url.pathname, item.path)}>
+            <span class="index-number eyebrow" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <span class="index-label">{item.label}</span>
+            <span class="current-marker" aria-hidden="true">●</span>
+          </a>
+        </li>
       ))}</ol>
     </nav>
-    <div class="index-contact stack"><p class="eyebrow">Elsewhere / contact</p><ContactLinks /></div>
+    <div class="index-contact stack"><SectionLabel>Elsewhere / contact</SectionLabel><ContactLinks /></div>
   </div>
 </dialog>
 <script>
@@ -61,22 +68,28 @@ import ContactLinks from '../common/ContactLinks.astro';
   }
 </script>
 <style>
-  .site-header, .index-top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); padding-block: var(--space-5); }
-  .site-header { position: relative; z-index: var(--layer-header); }
-  .identity, button { font-family: var(--font-mono); font-size: var(--text-small); text-transform: uppercase; letter-spacing: 0.06em; }
-  .identity { text-decoration: none; }
-  .initials { display: none; }
-  button { border: var(--border-thin) solid var(--color-border); border-radius: var(--radius-small); background: transparent; padding: var(--space-3) var(--space-4); cursor: pointer; min-height: 44px; }
-  button:hover { background: var(--color-surface); }
+  .header-inner, .index-top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-ui); min-height: var(--header-height); }
+  .site-header { position: sticky; top: 0; z-index: var(--layer-header); background: var(--color-bg); border-bottom: var(--border-thin) solid var(--color-border); }
+  .identity, button { font-family: var(--font-body); font-size: var(--text-ui); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+  .identity { text-decoration: none; white-space: nowrap; padding-block: var(--space-3); }
+  button { border: var(--border-thin) solid transparent; border-radius: var(--radius-xs); background: transparent; padding: var(--space-2) var(--space-3); cursor: pointer; min-height: 44px; flex-shrink: 0; transition: background var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard); }
+  button:hover { background: var(--color-surface-2); border-color: var(--color-border-strong); }
   dialog { inset: 0; margin: 0; width: 100%; height: 100%; height: 100dvh; max-width: none; max-height: none; padding: 0; border: 0; background: var(--color-bg); color: var(--color-text); z-index: var(--layer-overlay); overflow-y: auto; }
-  dialog[open] { animation: index-in var(--duration-normal) var(--ease-standard); }
-  .index-content { padding-bottom: var(--space-7); }
-  ol { list-style: none; margin: var(--space-6) 0; padding: 0; }
+  dialog[open] { animation: index-in var(--motion-slow) var(--ease-enter); }
+  .index-content { min-height: 100%; display: flex; flex-direction: column; padding-bottom: var(--space-6); }
+  .index-top { flex-shrink: 0; }
+  ol { list-style: none; margin: var(--space-6) 0 0; padding: 0; border-top: var(--border-thin) solid var(--color-border); }
   li { border-bottom: var(--border-thin) solid var(--color-border); }
-  li a { display: flex; align-items: center; gap: var(--space-5); padding-block: var(--space-4); text-decoration: none; font-size: var(--text-heading); }
-  li a[aria-current='page'] { text-decoration: underline; }
-  li a:hover { background: var(--color-surface); }
-  .index-contact { padding-top: var(--space-5); }
+  li a { display: grid; grid-template-columns: clamp(2rem, 6vw, 6rem) minmax(0, 1fr) auto; align-items: center; gap: var(--space-2); padding-block: clamp(0.875rem, 2vh, 1.25rem); text-decoration: none; font-size: var(--text-index); line-height: var(--leading-heading); font-weight: 500; letter-spacing: -0.035em; text-transform: uppercase; color: var(--color-muted); transition: color var(--motion-normal) var(--ease-standard), box-shadow var(--motion-normal) var(--ease-standard); }
+  .index-label { transition: transform var(--motion-normal) var(--ease-standard); }
+  .index-number { letter-spacing: 0; }
+  .current-marker { font-family: var(--font-mono); font-size: var(--text-small); opacity: 0; transition: opacity var(--motion-normal) var(--ease-standard); }
+  li a[aria-current] { color: var(--color-text); box-shadow: 0 var(--border-thin) var(--color-border-strong); }
+  li a[aria-current] .current-marker { opacity: 1; }
+  li a:hover, li a:focus-visible { color: var(--color-text); box-shadow: 0 var(--border-thin) var(--color-muted); }
+  li a:hover .index-label, li a:focus-visible .index-label { transform: translateX(var(--space-1)); }
+  li a:hover .index-number, li a:focus-visible .index-number { color: var(--color-text); }
+  .index-contact { margin-top: auto; padding-top: var(--space-6); font-size: var(--text-small); }
+  .index-contact > :global(* + *) { margin-block-start: var(--space-3); }
   @keyframes index-in { from { opacity: 0; } to { opacity: 1; } }
-  @media (max-width: 30rem) { .full-name { display: none; } .initials { display: inline; } }
 </style>
