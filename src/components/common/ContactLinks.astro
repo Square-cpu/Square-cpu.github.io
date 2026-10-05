@@ -1,0 +1,11 @@
+---
+import { site } from '../../data/site';
+---
+{site.contactLinks.length ? (
+  <ul class="contact-links">
+    {site.contactLinks.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+  </ul>
+) : <p class="muted">Contact and external links — to be added.</p>}
+<style>
+  .contact-links { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-5); }
+</style>

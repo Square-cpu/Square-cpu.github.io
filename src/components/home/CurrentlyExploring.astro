@@ -1,0 +1,29 @@
+---
+import { exploringTopics } from '../../data/exploring';
+---
+<section class="section stack" aria-labelledby="exploring-heading">
+  <p class="eyebrow">03 / Curiosities</p>
+  <h2 id="exploring-heading">Currently exploring</h2>
+  <p class="eyebrow">Provisional topics</p>
+  <details>
+    <summary><span>{exploringTopics.map(({ title }) => title).join(' · ')}</span><span class="indicator" aria-hidden="true">↓</span></summary>
+    <ul class="topics">
+      {exploringTopics.map((topic) => (
+        <li class="stack">
+          <h3>{topic.title}</h3>
+          <p class="muted">{topic.description}</p>
+          {topic.link && <a href={topic.link.href}>{topic.link.label}</a>}
+          {topic.updatedAt && <p class="eyebrow">Updated <time datetime={topic.updatedAt}>{topic.updatedAt}</time></p>}
+        </li>
+      ))}
+    </ul>
+  </details>
+</section>
+<style>
+  summary { display: flex; justify-content: space-between; gap: var(--space-4); padding-block: var(--space-4); cursor: pointer; list-style: none; border-block: var(--border-thin) solid var(--color-border); }
+  summary::-webkit-details-marker { display: none; }
+  .indicator { transition: transform var(--duration-fast) var(--ease-standard); }
+  details[open] .indicator { transform: rotate(180deg); }
+  .topics { list-style: none; padding: 0; margin-block: var(--space-6) 0; display: grid; gap: var(--space-6); }
+  @media (min-width: 48rem) { .topics { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>

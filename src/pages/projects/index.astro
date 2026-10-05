@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectPreview from '../../components/projects/ProjectPreview.astro';
+import { getPublishedProjects } from '../../lib/projects';
+const projects = await getPublishedProjects();
+---
+<BaseLayout title="Projects">
+  <header class="page-heading stack">
+    <p class="eyebrow">Complete archive</p>
+    <h1>Projects</h1>
+    <p class="lead reading muted">All published project entries. Descriptions and case studies are temporary.</p>
+  </header>
+  <section class="section" aria-labelledby="archive-heading">
+    <div class="section-heading stack"><h2 id="archive-heading">All projects</h2><p class="eyebrow">{projects.length} entries / newest known year first</p></div>
+    <div>{projects.map((project) => <ProjectPreview project={project} />)}</div>
+  </section>
+</BaseLayout>

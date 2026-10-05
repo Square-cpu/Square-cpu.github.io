@@ -1,0 +1,16 @@
+---
+import ContactLinks from '../common/ContactLinks.astro';
+import { navigation, site } from '../../data/site';
+import { withBase } from '../../lib/paths';
+interface Props { home?: boolean; }
+const { home = false } = Astro.props;
+---
+<footer class="shell section stack" aria-labelledby="contact-heading">
+  <p class="eyebrow">{home ? '08 / Contact' : 'Contact'}</p>
+  <h2 id="contact-heading">Find me elsewhere</h2>
+  <ContactLinks />
+  <noscript>
+    <nav id="footer-index" aria-label="Site index"><ul>{navigation.map((item) => <li><a href={withBase(item.path)}>{item.label}</a></li>)}</ul></nav>
+  </noscript>
+  <p class="eyebrow">{site.name} <span aria-hidden="true">/</span> Portfolio in progress</p>
+</footer>

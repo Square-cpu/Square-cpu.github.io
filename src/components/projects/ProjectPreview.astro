@@ -1,0 +1,22 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { withBase } from '../../lib/paths';
+interface Props { project: CollectionEntry<'projects'>; context?: 'selected' | 'archive'; index?: number; }
+const { project, context = 'archive', index } = Astro.props;
+const { data } = project;
+---
+<article class="project-preview" data-context={context}>
+  <div class="eyebrow">{index !== undefined && <span>{String(index + 1).padStart(2, '0')} / </span>}{data.year ?? 'Year to be added'}</div>
+  <div class="project-copy stack">
+    <h3><a href={withBase(`projects/${project.id}/`)}>{data.shortTitle ?? data.title}</a></h3>
+    <p class="muted reading">{data.summary}</p>
+    {data.categories.length > 0 && <p class="eyebrow">{data.categories.join(' / ')}</p>}
+  </div>
+  <slot name="media" />
+</article>
+<style>
+  .project-preview { padding-block: var(--space-6); border-top: var(--border-thin) solid var(--color-border); display: grid; gap: var(--space-4); }
+  .project-copy { min-width: 0; }
+  .project-copy > * + * { margin-top: var(--space-3); }
+  @media (min-width: 48rem) { .project-preview { grid-template-columns: minmax(9rem, 1fr) minmax(0, 4fr); gap: var(--space-6); } }
+</style>

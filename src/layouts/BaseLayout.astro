@@ -1,0 +1,33 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site';
+import { withBase } from '../lib/paths';
+import SiteHeader from '../components/navigation/SiteHeader.astro';
+import ContactFooter from '../components/home/ContactFooter.astro';
+interface Props { title?: string; description?: string; home?: boolean; }
+const { title, description = site.description, home = false } = Astro.props;
+const pageTitle = title ? `${title} — ${site.name}` : site.name;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{pageTitle}</title>
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <SiteHeader />
+    <main id="main-content" class="shell" tabindex="-1"><slot /></main>
+    <ContactFooter home={home} />
+  </body>
+</html>
