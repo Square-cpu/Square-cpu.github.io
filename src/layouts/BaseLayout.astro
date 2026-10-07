@@ -27,7 +27,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <SiteHeader />
-    <main id="main-content" class="shell" tabindex="-1"><slot /></main>
+    <main id="main-content" class:list={['shell', { 'home-page': home }]} tabindex="-1"><slot /></main>
     <ContactFooter home={home} />
   </body>
 </html>

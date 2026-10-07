@@ -2,7 +2,7 @@
 title: "WFC Procedural Generator"
 summary: "A procedural generator. TODO: project description."
 featured: true
-featuredOrder: 2
+featuredOrder: 1
 draft: false
 ---
 

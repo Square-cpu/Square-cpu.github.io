@@ -38,6 +38,7 @@ iframe { max-width: 100%; }
 .page-heading { padding-block: var(--space-page); }
 .section-heading { margin-bottom: var(--space-6); }
 .text-link { display: inline-block; padding-block: var(--space-2); }
+.home-page .text-link { min-height: var(--size-touch-target); }
 .skip-link { position: fixed; top: var(--space-4); left: var(--space-4); z-index: var(--layer-skip); padding: var(--space-3) var(--space-4); background: var(--color-text); color: var(--color-bg); transform: translateY(-200%); }
 .skip-link:focus { transform: translateY(0); }
 .prose { max-width: var(--width-reading); }

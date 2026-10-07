@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import { selectFeaturedProjects } from './project-selection';
 
 export async function getPublishedProjects() {
   return (await getCollection('projects', ({ data }) => !data.draft)).sort(
@@ -7,7 +8,5 @@ export async function getPublishedProjects() {
 }
 
 export async function getFeaturedProjects() {
-  return (await getPublishedProjects()).filter(({ data }) => data.featured).sort(
-    (a, b) => (a.data.featuredOrder ?? Infinity) - (b.data.featuredOrder ?? Infinity) || a.data.title.localeCompare(b.data.title),
-  );
+  return selectFeaturedProjects(await getCollection('projects'));
 }

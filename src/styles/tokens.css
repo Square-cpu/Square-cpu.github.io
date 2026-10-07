@@ -29,6 +29,7 @@
   --width-content: 92rem;
   --width-reading: 42rem;
   --header-height: 4.5rem;
+  --size-touch-target: 2.75rem;
   --font-body: 'Instrument Sans Variable', system-ui, sans-serif;
   --font-display: var(--font-body);
   --font-mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;

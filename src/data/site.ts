@@ -13,3 +13,6 @@ export const navigation = [
   { label: 'Awards', path: 'awards/' },
   { label: 'About', path: 'about/' },
 ];
+
+// Labels reserve contact space; they are not claims that these accounts exist.
+export const contactPlaceholderLabels = ['Email', 'GitHub', 'LinkedIn', 'YouTube'];

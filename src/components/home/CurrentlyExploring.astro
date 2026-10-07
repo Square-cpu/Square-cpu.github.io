@@ -1,29 +1,54 @@
 ---
 import { exploringTopics } from '../../data/exploring';
 ---
-<section class="section stack" aria-labelledby="exploring-heading">
-  <p class="eyebrow">03 / Curiosities</p>
-  <h2 id="exploring-heading">Currently exploring</h2>
-  <p class="eyebrow">Provisional topics</p>
+<section class="exploring" aria-labelledby="exploring-heading">
+  <h2 id="exploring-heading" class="eyebrow"><span aria-hidden="true">03 / </span>Currently exploring</h2>
   <details>
-    <summary><span>{exploringTopics.map(({ title }) => title).join(' · ')}</span><span class="indicator" aria-hidden="true">↓</span></summary>
+    <summary aria-label={exploringTopics.map(({ title }) => title).join(', ')}><span class="topic-line">{exploringTopics.map(({ title }, index) => <span class="topic-name">{title}{index < exploringTopics.length - 1 && <span class="separator" aria-hidden="true">{' · '}</span>}</span>)}</span><span class="indicator" aria-hidden="true">↓</span></summary>
+    <div class="exploring-layer">
+    <p class="layer-note eyebrow">Open questions / provisional directions</p>
     <ul class="topics">
       {exploringTopics.map((topic) => (
-        <li class="stack">
+        <li>
           <h3>{topic.title}</h3>
           <p class="muted">{topic.description}</p>
-          {topic.link && <a href={topic.link.href}>{topic.link.label}</a>}
+          {topic.link && <a class="text-link" href={topic.link.href}>{topic.link.label}</a>}
           {topic.updatedAt && <p class="eyebrow">Updated <time datetime={topic.updatedAt}>{topic.updatedAt}</time></p>}
         </li>
       ))}
     </ul>
+    </div>
   </details>
 </section>
 <style>
-  summary { display: flex; justify-content: space-between; gap: var(--space-4); padding-block: var(--space-4); cursor: pointer; list-style: none; border-block: var(--border-thin) solid var(--color-border); }
+  .exploring { padding-bottom: var(--space-8); }
+  h2 { font-weight: 400; line-height: var(--leading-body); letter-spacing: 0.08em; }
+  details { margin-top: var(--space-5); border-block: var(--border-thin) solid var(--color-border-strong); }
+  summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); padding-block: var(--space-5); cursor: pointer; list-style: none; }
+  .topic-line { display: flex; flex-wrap: wrap; column-gap: var(--space-3); row-gap: var(--space-2); font-size: var(--text-lead); line-height: 1.5; }
+  .topic-name { display: inline-flex; align-items: baseline; gap: var(--space-3); max-width: 100%; }
+  .separator { flex-shrink: 0; color: var(--color-muted); }
+  @media (max-width: 30rem) {
+    .topic-line { display: block; }
+    .topic-name { display: block; }
+    .separator { display: none; }
+  }
   summary::-webkit-details-marker { display: none; }
-  .indicator { transition: transform var(--duration-fast) var(--ease-standard); }
+  .indicator { flex-shrink: 0; font-size: var(--text-lead); transition: transform var(--duration-fast) var(--ease-standard); }
   details[open] .indicator { transform: rotate(180deg); }
-  .topics { list-style: none; padding: 0; margin-block: var(--space-6) 0; display: grid; gap: var(--space-6); }
-  @media (min-width: 48rem) { .topics { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .exploring-layer { padding-block: var(--space-3) var(--space-6); }
+  .topics { list-style: none; padding: 0; margin: var(--space-6) 0 0; display: grid; gap: var(--space-6); }
+  .topics li { border-top: var(--border-thin) solid var(--color-border); padding-top: var(--space-4); }
+  .topics h3 { font-size: var(--text-body); }
+  .topics p { margin-top: var(--space-3); max-width: 32ch; }
+  .topics .eyebrow { font-size: var(--text-small); }
+  @media (min-width: 48rem) {
+    .topics { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--grid-gap); }
+    .topics li { padding-right: var(--space-5); }
+  }
+  /* Progressive enhancement: unsupported browsers retain native instant disclosure. */
+  @supports selector(details::details-content) {
+    details::details-content { opacity: 0; transition: opacity var(--motion-normal) var(--ease-standard), content-visibility var(--motion-normal) allow-discrete; }
+    details[open]::details-content { opacity: 1; }
+  }
 </style>

@@ -1,10 +1,30 @@
 ---
 import HeroVisual from '../interactive/HeroVisual.astro';
+import SectionLabel from '../common/SectionLabel.astro';
+import { openingCopy } from '../../data/opening';
 ---
-<section class="hero stack" aria-labelledby="hero-heading">
-  <p class="eyebrow">01 / Personal portfolio · foundation</p>
-  <h1 id="hero-heading">Arthur Milander</h1>
-  <p class="lead reading muted">TODO: a short personal introduction.</p>
-  <HeroVisual />
+<section class="hero" aria-labelledby="hero-heading">
+  <SectionLabel number="01">Hello</SectionLabel>
+  <div class="hero-grid layout-grid">
+    <div class="hero-copy">
+      <h1 id="hero-heading"><span>Arthur</span>{' '}<span>Milander</span></h1>
+      <p class="hero-statement">{openingCopy.heroStatement}</p>
+    </div>
+    <div class="hero-study"><HeroVisual /></div>
+  </div>
 </section>
-<style>.hero { padding-block: var(--space-8); }</style>
+<style>
+  .hero { padding-block: var(--space-page) var(--space-7); }
+  .hero-grid { margin-top: var(--space-6); row-gap: var(--space-7); align-items: center; }
+  .hero-copy, .hero-study { grid-column: 1 / -1; min-width: 0; }
+  h1 { font-size: clamp(3.75rem, 16vw, 5.5rem); letter-spacing: -0.055em; line-height: 0.98; }
+  h1 span { display: block; }
+  .hero-statement { max-width: 32ch; margin-top: var(--space-6); font-size: var(--text-lead); line-height: 1.5; color: var(--color-muted); text-wrap: pretty; }
+  .hero-study { width: min(78%, 17rem); justify-self: end; }
+  @media (min-width: 48rem) {
+    .hero-copy { grid-column: 1 / 8; }
+    .hero-study { grid-column: 8 / -1; width: 100%; max-width: 29rem; }
+    h1 { font-size: clamp(4.5rem, 8.5vw, 7.5rem); }
+    .hero-statement { margin-top: var(--space-7); }
+  }
+</style>

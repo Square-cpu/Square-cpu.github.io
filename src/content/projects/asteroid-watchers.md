@@ -3,7 +3,7 @@ title: "NASA Space Apps Challenge — Asteroid Watchers"
 shortTitle: "Asteroid Watchers"
 summary: "A NASA Space Apps Challenge project. TODO: project description."
 featured: true
-featuredOrder: 1
+featuredOrder: 5
 draft: false
 ---
 

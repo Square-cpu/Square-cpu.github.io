@@ -1,10 +1,22 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { withBase } from '../../lib/paths';
-interface Props { project: CollectionEntry<'projects'>; context?: 'selected' | 'archive'; index?: number; }
-const { project, context = 'archive', index } = Astro.props;
+import type { FeaturedVariant } from '../../data/featured-presentation';
+interface Props { project: CollectionEntry<'projects'>; context?: 'selected' | 'archive'; index?: number; variant?: FeaturedVariant; }
+const { project, context = 'archive', index, variant = 'open' } = Astro.props;
 const { data } = project;
 ---
+{context === 'selected' ? (
+  <article class:list={['exhibit', `exhibit-${variant}`]} data-context="selected" data-project={project.id} data-variant={variant}>
+    <div class="exhibit-media"><slot name="media" /></div>
+    <div class="exhibit-copy">
+      <p class="exhibit-meta eyebrow"><span>{index !== undefined && `04.${index + 1}`}</span>{data.year && <span>{data.year}</span>}</p>
+      <h3><a href={withBase(`projects/${project.id}/`)} aria-label={`Open project: ${data.title}`}><span>{data.shortTitle ?? data.title}</span><span class="exhibit-arrow" aria-hidden="true">→</span></a></h3>
+      <p class="exhibit-summary muted">{data.summary}</p>
+      {data.categories.length > 0 && <p class="eyebrow exhibit-categories">{data.categories.join(' / ')}</p>}
+    </div>
+  </article>
+) : (
 <article class="project-preview" data-context={context}>
   <div class="eyebrow">{index !== undefined && <span>{String(index + 1).padStart(2, '0')} / </span>}{data.year ?? 'Year to be added'}</div>
   <div class="project-copy stack">
@@ -14,9 +26,58 @@ const { data } = project;
   </div>
   <slot name="media" />
 </article>
+)}
 <style>
   .project-preview { padding-block: var(--space-6); border-top: var(--border-thin) solid var(--color-border); display: grid; gap: var(--space-4); }
   .project-copy { min-width: 0; }
   .project-copy > * + * { margin-top: var(--space-3); }
   @media (min-width: 48rem) { .project-preview { grid-template-columns: minmax(9rem, 1fr) minmax(0, 4fr); gap: var(--space-6); } }
+  .exhibit { grid-column: 1 / -1; position: relative; min-width: 0; display: grid; gap: var(--space-5); align-content: start; }
+  .exhibit-media { min-width: 0; aspect-ratio: 8 / 5; background: var(--color-surface); overflow: hidden; border-radius: var(--radius-xs); }
+  .exhibit-meta { display: flex; gap: var(--space-5); margin-bottom: var(--space-4); }
+  .exhibit h3 { font-size: clamp(1.75rem, 2.8vw, 3rem); letter-spacing: -0.035em; }
+  .exhibit h3 a { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); text-decoration: none; }
+  .exhibit h3 a::after { content: ''; position: absolute; inset: 0; }
+  .exhibit h3 a:focus-visible { outline: none; }
+  .exhibit:focus-within { outline: 2px solid var(--color-focus); outline-offset: var(--space-2); }
+  .exhibit-arrow { flex-shrink: 0; font-size: var(--text-lead); color: var(--color-muted); transition: transform var(--motion-normal) var(--ease-standard), color var(--motion-normal) var(--ease-standard); }
+  .exhibit-summary { margin-top: var(--space-4); max-width: 40ch; font-size: var(--text-body); }
+  .exhibit-categories { margin-top: var(--space-4); }
+  .exhibit-feature h3 { font-size: clamp(2rem, 4vw, 4rem); }
+  .exhibit-portrait .exhibit-media { aspect-ratio: 4 / 3; background: var(--color-bg); border-bottom: var(--border-thin) solid var(--color-border-strong); border-radius: 0; }
+  .exhibit-open .exhibit-media { aspect-ratio: 2 / 1; background: var(--color-bg); border-radius: 0; }
+  .exhibit-open .exhibit-copy { border-top: var(--border-thin) solid var(--color-border-strong); padding-top: var(--space-5); }
+  .exhibit-ribbon { border-block: var(--border-thin) solid var(--color-border-strong); padding-block: var(--space-5); }
+  .exhibit-ribbon .exhibit-media { aspect-ratio: 3 / 2; background: var(--color-bg); border-radius: 0; }
+  .exhibit-orbital .exhibit-media { aspect-ratio: 4 / 3; background: var(--color-bg); border-radius: 0; }
+  .exhibit-compact .exhibit-media { aspect-ratio: 2 / 1; background: var(--color-surface-2); }
+  @media (min-width: 48rem) {
+    .exhibit-feature { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--grid-gap); align-items: center; }
+    .exhibit-feature .exhibit-copy { grid-row: 1; grid-column: 1; padding-right: var(--space-5); }
+    .exhibit-feature .exhibit-media { grid-row: 1; grid-column: 2; }
+    .exhibit-portrait { grid-column: 1 / 8; }
+    .exhibit-open { grid-column: 9 / -1; align-self: end; }
+    .exhibit-open .exhibit-media { aspect-ratio: 1 / 1; }
+    .exhibit-ribbon { grid-column: 2 / -1; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-6); align-items: center; }
+    .exhibit-ribbon .exhibit-media { aspect-ratio: 8 / 5; }
+    .exhibit-orbital { grid-column: 1 / 8; }
+    .exhibit-compact { grid-column: 9 / -1; align-self: end; }
+    .exhibit-compact .exhibit-media { aspect-ratio: 4 / 3; }
+    .exhibit-compact h3 { font-size: var(--text-lead); }
+  }
+  @media (min-width: 64rem) {
+    .exhibit-portrait { grid-column: 2 / 8; }
+    .exhibit-ribbon { grid-column: 3 / -1; }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .exhibit:hover .exhibit-arrow { transform: translateX(var(--space-1)); color: var(--color-text); }
+    .exhibit:hover :global(.ink) { stroke: var(--color-text); }
+  }
+  .exhibit:focus-within .exhibit-arrow { transform: translateX(var(--space-1)); color: var(--color-text); }
+  .exhibit :global(svg) { transition: transform var(--motion-normal) var(--ease-standard); }
+  .exhibit:focus-within :global(svg) { transform: translateY(calc(-1 * var(--space-1))); }
+  @media (hover: hover) and (pointer: fine) { .exhibit:hover :global(svg) { transform: translateY(calc(-1 * var(--space-1))); } }
+  @media (prefers-reduced-motion: reduce) {
+    .exhibit:hover .exhibit-arrow, .exhibit:focus-within .exhibit-arrow, .exhibit:hover :global(svg), .exhibit:focus-within :global(svg) { transform: none; }
+  }
 </style>

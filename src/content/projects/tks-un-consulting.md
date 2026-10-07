@@ -2,7 +2,7 @@
 title: "TKS / UN Consulting Challenge"
 summary: "Cattle tracking through satellite data and machine learning. TODO: project details."
 featured: true
-featuredOrder: 3
+featuredOrder: 2
 draft: false
 ---
 

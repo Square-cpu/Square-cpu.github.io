@@ -1,6 +1,43 @@
-<div class="hero-visual" aria-label="Placeholder for a future interactive visual" role="img">
-  <span class="eyebrow">Visual study / reserved space</span>
+---
+const marks = [
+  'M12 12H60V60H12Z M24 24H48V48H24Z',
+  'M12 60A48 48 0 0 1 60 12 M24 60A36 36 0 0 1 60 24 M36 60A24 24 0 0 1 60 36 M48 60A12 12 0 0 1 60 48',
+  'M12 18H60 M12 30H60 M12 42H60 M12 54H60',
+  'M12 60L60 12 M12 36L36 12 M36 60L60 36',
+];
+const tiles = Array.from({ length: 16 }, (_, index) => ({
+  x: 24 + (index % 4) * 86,
+  y: 24 + Math.floor(index / 4) * 86,
+  pattern: (index + Math.floor(index / 4)) % marks.length,
+})).filter((_, index) => index !== 0 && index !== 15);
+---
+<div class="hero-visual" aria-hidden="true">
+  <svg viewBox="0 0 378 378" fill="none" focusable="false">
+    <path class="guides" d="M8 16H370 M8 362H370 M16 8V370 M362 8V370 M16 189H362 M189 16V362" />
+    {tiles.map((tile, index) => (
+      <g class:list={['tile', { 'tile-raised': index % 3 === 1 }]} transform={`translate(${tile.x} ${tile.y})`}>
+        <rect class="tile-base" width="72" height="72" rx="2" />
+        <path class="tile-edge" d="M1 71V1H71" />
+        <path class="tile-mark" d={marks[tile.pattern]} />
+      </g>
+    ))}
+    <path class="registration" d="M8 8H24 M8 8V24 M354 370H370V354" />
+  </svg>
+  <p class="study-label eyebrow"><span>Form study</span><span>4 × 4</span></p>
 </div>
 <style>
-  .hero-visual { min-height: clamp(12rem, 28vw, 24rem); display: grid; place-items: center; padding: var(--space-5); background: var(--color-surface); border: var(--border-thin) solid var(--color-border); }
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .guides { stroke: var(--color-border); stroke-width: 1; stroke-dasharray: 2 6; }
+  .tile-base { fill: var(--color-surface); }
+  .tile-raised .tile-base { fill: var(--color-surface-2); }
+  .tile-edge { stroke: var(--color-border-strong); stroke-width: 1; }
+  .tile-mark { stroke: var(--color-text-muted); stroke-width: 1; transition: translate var(--motion-normal) var(--ease-standard), stroke var(--motion-normal) var(--ease-standard); }
+  .registration { stroke: var(--color-text-faint); stroke-width: 1; }
+  .study-label { display: flex; justify-content: space-between; gap: var(--space-4); margin-top: var(--space-4); font-size: var(--text-small); letter-spacing: 0.04em; }
+  @media (hover: hover) and (pointer: fine) {
+    .tile:hover .tile-mark { translate: 2px -2px; stroke: var(--color-text); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tile:hover .tile-mark { translate: none; }
+  }
 </style>

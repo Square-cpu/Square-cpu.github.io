@@ -1,0 +1,49 @@
+---
+interface Props { kind: 'frames' | 'wire' | 'drawing' | 'fragment'; }
+const { kind } = Astro.props;
+const labels = { frames: 'Frame strip', wire: 'Wire form', drawing: 'Line study', fragment: 'Tile fragment' };
+---
+<figure class:list={['artifact', `study-${kind}`]}>
+  <svg viewBox={kind === 'frames' ? '0 0 600 180' : '0 0 320 260'} fill="none" focusable="false" aria-hidden="true">
+    {kind === 'frames' && <>
+      {[0, 1, 2, 3].map(index => <g transform={`translate(${18 + index * 145} 20)`}>
+        <rect class="edge" width="128" height="140" rx="2" />
+        <path class="guide" d="M0 112H128" />
+        <rect class="ink" x={18 + index * 14} y={62 - index * 12} width="32" height="32" rx="2" />
+      </g>)}
+    </>}
+    {kind === 'wire' && <>
+      <path class="guide" d="M26 206H294 M160 20V240" />
+      <path class="ink" d="M70 72L178 38L260 96V194L152 228L70 170Z M70 72L152 130L260 96 M152 130V228" />
+      <path class="edge" d="M178 38V136L70 170 M178 136L260 194" />
+      <path class="edge" d="M40 78L52 74 M272 194L286 202" />
+    </>}
+    {kind === 'drawing' && <>
+      <circle class="edge" cx="160" cy="132" r="86" />
+      <path class="guide" d="M44 132H276 M160 16V248" />
+      <path class="ink" d="M78 170L200 48L246 154L78 170L160 218L200 48" />
+      <circle class="point" cx="200" cy="48" r="3" />
+      <circle class="point" cx="78" cy="170" r="3" />
+    </>}
+    {kind === 'fragment' && <>
+      {[0, 1, 2, 3, 4, 5].map(index => <g transform={`translate(${36 + index % 3 * 84} ${46 + Math.floor(index / 3) * 84})`}>
+        <rect class="edge" width="76" height="76" rx="2" />
+        <path class:list={['tile', { 'tile-alt': index % 2 === 0 }]} d={index % 2 === 0 ? 'M4 4H72L4 72Z' : 'M4 72H72L72 4Z'} />
+      </g>)}
+    </>}
+  </svg>
+  <figcaption class="eyebrow">Placeholder / {labels[kind]}</figcaption>
+</figure>
+<style>
+  .artifact { margin: 0; }
+  svg { display: block; width: 100%; overflow: visible; }
+  .study-frames svg { background: var(--color-surface); border-radius: var(--radius-xs); }
+  .study-fragment svg { background: var(--color-surface); border-radius: var(--radius-xs); }
+  .edge { stroke: var(--color-border-strong); stroke-width: 1; }
+  .ink { stroke: var(--color-muted); stroke-width: 1.5; }
+  .guide { stroke: var(--color-border); stroke-dasharray: 2 6; }
+  .point { fill: var(--color-muted); }
+  .tile { fill: var(--color-surface-2); }
+  .tile-alt { fill: var(--color-border); }
+  figcaption { padding-top: var(--space-3); letter-spacing: 0.025em; }
+</style>

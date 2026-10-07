@@ -2,7 +2,7 @@
 title: "ENEM Prep Platform / Startup"
 summary: "An ENEM preparation platform/startup. TODO: project details."
 featured: true
-featuredOrder: 5
+featuredOrder: 4
 draft: false
 ---
 

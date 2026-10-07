@@ -2,7 +2,7 @@
 title: "Motion Lab"
 summary: "An animation study website/tool. TODO: project details."
 featured: true
-featuredOrder: 4
+featuredOrder: 3
 draft: false
 ---
 

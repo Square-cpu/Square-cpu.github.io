@@ -1,9 +1,28 @@
 ---
 import { withBase } from '../../lib/paths';
+import SectionLabel from '../common/SectionLabel.astro';
+import { openingCopy } from '../../data/opening';
 ---
-<section class="section stack" aria-labelledby="about-heading">
-  <p class="eyebrow">02 / Introduction</p>
-  <h2 id="about-heading">A little context</h2>
-  <p class="reading muted">TODO: a brief introduction to Arthur, his interests, and what he likes making.</p>
-  <a class="text-link" href={withBase('about/')}>More about me →</a>
+<section id="introduction" class="introduction layout-grid" aria-labelledby="about-heading">
+  <div class="introduction-label"><SectionLabel number="02">Introduction</SectionLabel></div>
+  <div class="introduction-copy">
+    <h2 id="about-heading">{openingCopy.aboutHeading}</h2>
+    <p class="introduction-lead">{openingCopy.aboutIntroduction}</p>
+    <div class="introduction-support">
+      <p class="muted">{openingCopy.aboutSupporting}</p>
+      <a class="text-link" href={withBase('about/')}>More about me <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
 </section>
+<style>
+  .introduction { padding-block: var(--space-7) var(--space-section); row-gap: var(--space-6); }
+  .introduction-label, .introduction-copy { grid-column: 1 / -1; }
+  .introduction-lead { max-width: 35ch; margin-top: var(--space-6); font-size: var(--text-lead); line-height: 1.5; text-wrap: pretty; }
+  .introduction-support { max-width: 42ch; margin-top: var(--space-5); }
+  .text-link { margin-top: var(--space-5); }
+  @media (min-width: 48rem) {
+    .introduction-label { grid-column: 1 / 4; padding-top: var(--space-3); }
+    .introduction-copy { grid-column: 5 / 12; }
+    .introduction-support { margin-left: var(--space-7); margin-top: var(--space-6); }
+  }
+</style>

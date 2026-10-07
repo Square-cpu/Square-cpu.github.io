@@ -1,11 +1,24 @@
 ---
-import { site } from '../../data/site';
+import { site, contactPlaceholderLabels } from '../../data/site';
+interface Props { variant?: 'default' | 'footer'; }
+const { variant = 'default' } = Astro.props;
 ---
-{site.contactLinks.length ? (
+{variant === 'footer' ? (
+  <div class="footer-contacts">
+    {!site.contactLinks.length && <p class="muted">Contact details to add.</p>}
+    <ul class="footer-contact-list" data-contact-placeholder={!site.contactLinks.length || undefined}>
+      {site.contactLinks.length ? site.contactLinks.map(link => <li><a href={link.href}>{link.label}<span aria-hidden="true">↗</span><span class="destination-note"> (external destination)</span></a></li>) : contactPlaceholderLabels.map(label => <li><span>{label}</span><span class="eyebrow">To add</span></li>)}
+    </ul>
+  </div>
+) : site.contactLinks.length ? (
   <ul class="contact-links">
     {site.contactLinks.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
   </ul>
 ) : <p class="muted">Contact and external links — to be added.</p>}
 <style>
   .contact-links { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-5); }
+  .footer-contact-list { list-style: none; padding: 0; margin: var(--space-4) 0 0; }
+  .footer-contact-list li { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); padding-block: var(--space-3); border-bottom: var(--border-thin) solid var(--color-border); }
+  .footer-contact-list a { display: flex; justify-content: space-between; width: 100%; padding-block: var(--space-2); }
+  .destination-note { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 </style>

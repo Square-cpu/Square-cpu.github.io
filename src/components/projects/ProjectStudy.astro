@@ -1,0 +1,87 @@
+---
+import type { ProjectStudy } from '../../data/featured-presentation';
+interface Props { study: ProjectStudy; }
+const { study } = Astro.props;
+const tiles = Array.from({ length: 20 }, (_, index) => ({
+  x: 116 + index % 5 * 82,
+  y: 42 + Math.floor(index / 5) * 82,
+  path: [
+    'M0 36H72 M36 0V72',
+    'M0 36H36V0 M36 72V36H72',
+    'M0 36H18A18 18 0 0 0 36 18V0 M36 72V54A18 18 0 0 1 54 36H72',
+    'M0 36H72 M36 0V72 M18 18H54V54H18Z',
+  ][(index + Math.floor(index / 5)) % 4],
+}));
+---
+<figure class:list={['project-study', `study-${study}`]} aria-hidden="true">
+  <svg viewBox="0 0 640 400" fill="none" focusable="false">
+    {study === 'tiles' && <>
+      <path class="guide" d="M94 18H546 M94 382H546 M94 18V382 M546 18V382" />
+      {tiles.map((tile, index) => <g transform={`translate(${tile.x} ${tile.y})`}>
+        <rect class:list={['surface', { 'surface-alt': index % 4 === 1 }]} width="72" height="72" rx="2" />
+        <path class="ink tile-line" d={tile.path} />
+      </g>)}
+    </>}
+    {study === 'layers' && <>
+      <path class="surface-alt" d="M70 80L460 30L574 164L184 214Z" />
+      <path class="surface" d="M70 158L460 108L574 242L184 292Z" />
+      <path class="edge" d="M70 80V300L184 358L574 306V164 M70 158L184 292L574 242 M70 236L184 358 M184 214V358" />
+      <path class="ink" d="M130 145L235 118L330 129L472 82 M149 164L237 145L338 151L488 109 M185 189L260 174L356 179L515 141" />
+      <path class="guide" d="M228 60L342 194 M306 50L420 184 M384 40L498 174 M108 124L498 74 M146 169L536 119" />
+      <path class="ink detail" d="M130 249L247 260L342 235L468 245L537 219" />
+    </>}
+    {study === 'timing' && <>
+      <path class="edge" d="M56 310H584 M56 80V326 M584 80V326" />
+      <path class="guide" d="M56 230H584 M56 150H584" />
+      {[64, 98, 154, 238, 360, 530].map((x, index) => <>
+        <path class="edge" d={`M${x} 302V318`} />
+        <rect class:list={['timing-shape', { 'surface-alt': index === 5 }]} x={x - 18} y={218 - index * 26} width="36" height="36" rx="2" />
+      </>)}
+      <path class="ink detail" d="M64 236C158 236 196 130 292 126S410 88 530 106" />
+    </>}
+    {study === 'panels' && <>
+      <rect class="surface-alt" x="52" y="88" width="194" height="224" rx="2" />
+      <path class="ink" d="M76 120H154 M76 142H214" />
+      <path class="edge" d="M76 178H222 M76 212H222 M76 246H222 M76 280H174" />
+      <rect class="edge" x="268" y="88" width="320" height="96" rx="2" />
+      <path class="ink detail" d="M294 120H436 M294 142H550" />
+      <rect class="surface" x="268" y="204" width="144" height="108" rx="2" />
+      <rect class="surface" x="432" y="204" width="156" height="108" rx="2" />
+      <path class="edge" d="M292 234H386 M292 256H348 M456 234H558 M456 256H518" />
+    </>}
+    {study === 'orbits' && <>
+      <ellipse class="edge" cx="320" cy="200" rx="248" ry="132" transform="rotate(-15 320 200)" />
+      <ellipse class="ink" cx="320" cy="200" rx="196" ry="96" transform="rotate(22 320 200)" />
+      <ellipse class="edge" cx="320" cy="200" rx="90" ry="156" transform="rotate(40 320 200)" />
+      <path class="guide" d="M32 200H608 M320 28V372" />
+      <path class="ink detail" d="M92 276C170 352 345 362 474 303" />
+      <circle class="surface-alt" cx="320" cy="200" r="24" />
+      <circle class="point" cx="484" cy="266" r="5" />
+      <circle class="point" cx="193" cy="94" r="3" />
+    </>}
+    {study === 'groups' && <>
+      <path class="edge" d="M132 200H274 M354 200H508 M320 118V166 M320 234V282" />
+      <rect class="surface-alt" x="274" y="166" width="80" height="68" rx="2" />
+      <path class="ink detail" d="M290 187H338 M290 209H322" />
+      {[{ x: 64, y: 166 }, { x: 508, y: 166 }, { x: 286, y: 50 }, { x: 286, y: 282 }].map(({ x, y }) => <>
+        <rect class="edge" x={x} y={y} width="68" height="68" rx="2" />
+        <path class="ink" d={`M${x + 18} ${y + 24}H${x + 50} M${x + 18} ${y + 44}H${x + 38}`} />
+      </>)}
+    </>}
+  </svg>
+  <figcaption class="eyebrow">Abstract study / media to come</figcaption>
+</figure>
+<style>
+  .project-study { margin: 0; height: 100%; display: flex; flex-direction: column; }
+  svg { display: block; width: 100%; flex: 1; min-height: 0; }
+  .surface { fill: var(--color-surface); }
+  .surface-alt { fill: var(--color-surface-2); }
+  .edge { stroke: var(--color-border-strong); stroke-width: 1; }
+  .guide { stroke: var(--color-border); stroke-width: 1; stroke-dasharray: 2 6; }
+  .ink { stroke: var(--color-muted); stroke-width: 1.5; }
+  .point { fill: var(--color-muted); }
+  .timing-shape { fill: var(--color-surface); stroke: var(--color-muted); stroke-width: 1; }
+  .study-groups .edge { stroke: var(--color-muted); }
+  .study-groups .surface-alt { fill: var(--color-border-strong); }
+  figcaption { padding: var(--space-2) var(--space-4); font-size: var(--text-small); letter-spacing: 0; text-transform: none; }
+</style>
