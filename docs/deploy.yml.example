@@ -1,4 +1,4 @@
-# Move to .github/workflows/deploy.yml when the repository and Pages URL are known.
+# Reference copy of .github/workflows/deploy.yml for the Square-cpu user site.
 name: Deploy to GitHub Pages
 on:
   push:
@@ -19,12 +19,20 @@ jobs:
       BASE_PATH: ${{ vars.BASE_PATH }}
     steps:
       - uses: actions/checkout@v7
-      - name: Require the production origin
-        run: test -n "$SITE_URL"
+      - name: Verify user-site configuration
+        run: |
+          test "${GITHUB_REPOSITORY,,}" = "square-cpu/square-cpu.github.io"
+          test "$SITE_URL" = "https://square-cpu.github.io"
+          test "$BASE_PATH" = "/"
       - uses: withastro/action@v6
         with:
           node-version: 24
-          build-cmd: npm run check && npm run build && npm run verify:links
+          build-cmd: >-
+            npm run check &&
+            npm run build &&
+            npm run verify:links &&
+            npx playwright install --with-deps chromium &&
+            npm test
   deploy:
     needs: build
     runs-on: ubuntu-latest

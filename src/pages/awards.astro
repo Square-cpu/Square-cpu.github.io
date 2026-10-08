@@ -1,7 +1,45 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { recognitionEntries } from '../data/recognition';
+const categories = [...new Set(recognitionEntries.map(entry => entry.category))];
 ---
 <BaseLayout title="Awards">
-  <header class="page-heading stack"><p class="eyebrow">Recognition</p><h1>Awards</h1><p class="lead muted">Content to come.</p></header>
-  <section class="section stack" aria-labelledby="entries-heading"><h2 id="entries-heading">Awards & distinctions</h2><p class="reading muted">TODO: add verified olympiads, medals, and other recognition.</p></section>
+  <header class="page-heading stack">
+    <p class="eyebrow">Recognition</p>
+    <h1>Awards</h1>
+    <p class="lead reading muted">A record of competitions, projects, and academic recognition.</p>
+  </header>
+  {categories.map((category, index) => (
+    <section class="section stack" aria-labelledby={`category-${index}`}>
+      <h2 id={`category-${index}`}>{category}</h2>
+      {recognitionEntries.filter(entry => entry.category === category).map(entry => (
+        <article class="award-record stack reading" data-award={entry.id}>
+          <div>
+            <h3>{entry.name}</h3>
+            {entry.fullName && <p class="muted">{entry.fullName}</p>}
+          </div>
+          <ul class="award-results">
+            {entry.results.map(result => (
+              <li>
+                <p><strong>{result.result}</strong><span class="award-date muted">{result.year ?? result.period ?? 'Year not recorded'}</span></p>
+                {result.level && <p class="muted">{result.level}</p>}
+                {result.project && <p>{result.project}</p>}
+                {result.detail && <p class="muted">{result.detail}</p>}
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </section>
+  ))}
 </BaseLayout>
+<style>
+  h2 { font-size: var(--text-lead); }
+  h3 { font-size: var(--text-body); }
+  .award-record + .award-record { margin-top: var(--space-7); }
+  .award-results { list-style: none; padding: 0; }
+  .award-results li { padding-block: var(--space-3); border-top: var(--border-thin) solid var(--color-border); }
+  .award-results li > p:first-child { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); align-items: baseline; }
+  .award-date { font-family: var(--font-mono); font-size: var(--text-small); }
+  strong { font-weight: 500; }
+</style>

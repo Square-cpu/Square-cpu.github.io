@@ -1,7 +1,26 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { experienceEntries } from '../data/experiences';
 ---
 <BaseLayout title="Experiences">
-  <header class="page-heading stack"><p class="eyebrow">Journey</p><h1>Experiences</h1><p class="lead muted">Content to come.</p></header>
-  <section class="section stack" aria-labelledby="entries-heading"><h2 id="entries-heading">Programs & learning environments</h2><p class="reading muted">TODO: add verified experiences, dates, and reflections. Possible entries include Behring Academy, TKS, Future Lab, and programming or research programs.</p></section>
+  <header class="page-heading stack">
+    <p class="eyebrow">Journey</p>
+    <h1>Experiences</h1>
+    <p class="lead reading muted">Programs, communities, and learning environments that have shaped what I make.</p>
+  </header>
+  {experienceEntries.map(entry => (
+    <section class="section stack" aria-labelledby={entry.id} data-experience={entry.id}>
+      {entry.period && <p class="eyebrow">{entry.period}</p>}
+      <h2 id={entry.id}>{entry.title}</h2>
+      <p class="reading">{entry.summary}</p>
+      {entry.highlights && entry.highlights.length > 0 && (
+        <ul class="reading muted">{entry.highlights.map(highlight => <li>{highlight}</li>)}</ul>
+      )}
+    </section>
+  ))}
 </BaseLayout>
+<style>
+  h2 { font-size: var(--text-lead); }
+  ul { padding-left: var(--space-5); }
+  li + li { margin-top: var(--space-3); }
+</style>

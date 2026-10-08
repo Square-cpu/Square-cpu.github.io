@@ -1,10 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ContactLinks from '../components/common/ContactLinks.astro';
+import { openingCopy } from '../data/opening';
 ---
 <BaseLayout title="About">
-  <header class="page-heading stack"><p class="eyebrow">Personal notes</p><h1>About Arthur</h1><p class="lead muted">A more personal introduction — to come.</p></header>
-  <section class="section stack" aria-labelledby="story-heading"><h2 id="story-heading">Story & interests</h2><p class="reading muted">TODO: personal story, interests, and what I like making.</p></section>
-  <section class="section stack" aria-labelledby="notes-heading"><h2 id="notes-heading">An open notebook</h2><p class="reading muted">TODO: photographs, drawings, and current curiosities.</p></section>
-  <section class="section stack" aria-labelledby="elsewhere-heading"><h2 id="elsewhere-heading">Elsewhere / contact</h2><ContactLinks /></section>
+  <header class="page-heading stack">
+    <p class="eyebrow">Personal notes</p>
+    <h1>About Arthur</h1>
+    <p class="lead">{openingCopy.aboutHeading}</p>
+    <div class="reading stack muted">
+      <p>{openingCopy.aboutIntroduction}</p>
+      <p>{openingCopy.aboutSupporting}</p>
+    </div>
+  </header>
 </BaseLayout>

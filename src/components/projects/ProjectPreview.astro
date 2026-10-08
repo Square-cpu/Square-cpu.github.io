@@ -20,7 +20,7 @@ const mediaDimensions = data.previewVideo ?? data.cover?.src;
   </article>
 ) : (
 <article class="project-preview" data-context={context}>
-  <div class="eyebrow">{index !== undefined && <span>{String(index + 1).padStart(2, '0')} / </span>}{data.year ?? 'Year to be added'}</div>
+  {(index !== undefined || data.year) && <div class="eyebrow">{index !== undefined && <span>{String(index + 1).padStart(2, '0')} / </span>}{data.year}</div>}
   <div class="project-copy stack">
     <h3><a href={withBase(`projects/${project.id}/`)}>{data.shortTitle ?? data.title}</a></h3>
     <p class="muted reading">{data.summary}</p>
@@ -33,7 +33,7 @@ const mediaDimensions = data.previewVideo ?? data.cover?.src;
   .project-preview { padding-block: var(--space-6); border-top: var(--border-thin) solid var(--color-border); display: grid; gap: var(--space-4); }
   .project-copy { min-width: 0; }
   .project-copy > * + * { margin-top: var(--space-3); }
-  @media (min-width: 48rem) { .project-preview { grid-template-columns: minmax(9rem, 1fr) minmax(0, 4fr); gap: var(--space-6); } }
+  @media (min-width: 48rem) { .project-preview { grid-template-columns: minmax(9rem, 1fr) minmax(0, 4fr); gap: var(--space-6); } .project-copy { grid-column: 2; } }
   .exhibit { grid-column: 1 / -1; position: relative; min-width: 0; display: grid; gap: var(--space-5); align-content: start; }
   .exhibit-media { min-width: 0; aspect-ratio: 8 / 5; background: var(--color-surface); overflow: hidden; border-radius: var(--radius-xs); }
   .exhibit-meta { display: flex; gap: var(--space-5); margin-bottom: var(--space-4); }

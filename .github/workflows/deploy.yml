@@ -1,0 +1,44 @@
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: ${{ vars.SITE_URL }}
+      BASE_PATH: ${{ vars.BASE_PATH }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Verify user-site configuration
+        run: |
+          test "${GITHUB_REPOSITORY,,}" = "square-cpu/square-cpu.github.io"
+          test "$SITE_URL" = "https://square-cpu.github.io"
+          test "$BASE_PATH" = "/"
+      - uses: withastro/action@v6
+        with:
+          node-version: 24
+          build-cmd: >-
+            npm run check &&
+            npm run build &&
+            npm run verify:links &&
+            npx playwright install --with-deps chromium &&
+            npm test
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5

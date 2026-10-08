@@ -13,7 +13,7 @@ const contacts = [
 const experiences = [
   ['Behring Academy', '2024 — 2026', 'A multi-year technology program and community where I grew through programming, mathematics, projects, competitive programming, mentoring, and annual university camps.'],
   ['The Knowledge Society (TKS)', '2025 — 2026', 'A 10-month global program that pushed me into unfamiliar technologies, real-world challenges, expert outreach, presentations, and building with students around the world.'],
-  ['Future Lab', '2026', 'A creative technology experience centered on animation, where I built Motion Lab to explore timing and spacing and iterated through feedback from working professionals.'],
+  ['Future Lab', '2026', 'A 6-week mentor-guided launchpad experience where I built Motion Lab, refining timing and spacing through continuous feedback from industry professionals to accelerate my creative growth.'],
 ] as const;
 
 test('featured content selection excludes future records, respects order, and preserves source arrays', () => {
@@ -80,7 +80,10 @@ test('shared public contacts have exact URLs, decorative icons, and no private d
   for (const [label, url] of contacts) await expect(dialog.getByRole('link', { name: `${label} (external destination)`, exact: true })).toHaveAttribute('href', url);
   await page.keyboard.press('Escape');
   await page.goto(`${base}/about/`);
-  for (const [label, url] of contacts) await expect(page.locator('main').getByRole('link', { name: `${label} (external destination)`, exact: true })).toHaveAttribute('href', url);
+  for (const [label, url] of contacts) {
+    await expect(page.getByRole('link', { name: `${label} (external destination)`, exact: true })).toHaveCount(1);
+    await expect(page.getByRole('contentinfo').getByRole('link', { name: `${label} (external destination)`, exact: true })).toHaveAttribute('href', url);
+  }
 });
 
 test('footer links remain keyboard usable and comfortably sized at 320px', async ({ page }) => {

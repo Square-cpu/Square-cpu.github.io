@@ -12,6 +12,4 @@ featuredOrder: 5
 draft: false
 ---
 
-## Case study to come
-
-TODO: add the project context, Arthur’s role, process, outcomes, and supporting media once verified information is available.
+Detailed case study coming soon. I’m still documenting the process behind this project.
