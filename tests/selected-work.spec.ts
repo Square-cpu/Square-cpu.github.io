@@ -8,11 +8,11 @@ const route = (path = '/') => `${base}${path}`;
 const folder = 'artifacts/phase-2c';
 const expectedProjects = [
   ['wfc-procedural-generator', 'WFC Procedural Generator'],
-  ['tks-un-consulting', 'TKS / UN Consulting Challenge'],
+  ['tks-un-consulting', 'Pasture Intelligence'],
   ['motion-lab', 'Motion Lab'],
-  ['enem-prep-platform', 'ENEM Prep Platform / Startup'],
-  ['asteroid-watchers', 'NASA Space Apps Challenge — Asteroid Watchers'],
-  ['behring-ifood-hackathon', 'Behring Academy Camp — iFood Hackathon project'],
+  ['enem-prep-platform', 'ENEM Prep Platform'],
+  ['asteroid-watchers', 'Asteroid Watchers'],
+  ['behring-ifood-hackathon', 'iFood Hackathon'],
 ];
 
 test('featured selection excludes archive-only entries and drafts and respects editorial order', () => {
@@ -35,7 +35,10 @@ test(`selected entries, accessible titles, and links (base ${base || '/'})`, asy
     await expect(preview.getByRole('heading', { level: 3 })).not.toBeEmpty();
     const link = preview.getByRole('link', { name: `Open project: ${title}`, exact: true });
     await expect(link).toHaveAttribute('href', route(`/projects/${id}/`));
-    await expect(preview.locator('.exhibit-meta')).toHaveText(`04.${index + 1}`);
+    await expect(preview.locator('.exhibit-meta > span').first()).toHaveText(`04.${index + 1}`);
+    const year = [2026, 2026, 2026, undefined, 2025, undefined][index];
+    await expect(preview.locator('.exhibit-meta > span')).toHaveCount(year ? 2 : 1);
+    if (year) await expect(preview.locator('.exhibit-meta > span').last()).toHaveText(String(year));
     await expect(preview).not.toContainText('Year to be added');
     const response = await page.goto(await link.getAttribute('href') as string);
     expect(response?.status()).toBe(200);
@@ -55,6 +58,12 @@ test('keyboard traversal reaches every preview and shows focus across its surfac
   await expect(page.locator('summary')).toBeFocused();
   for (let index = 0; index < expectedProjects.length; index++) {
     await page.keyboard.press('Tab');
+    if (expectedProjects[index][0] === 'motion-lab') {
+      const toggle = page.locator('[data-project="motion-lab"] .preview-toggle');
+      await expect(toggle).toBeFocused();
+      await expect(toggle).toHaveCSS('outline-style', 'solid');
+      await page.keyboard.press('Tab');
+    }
     await expect(links.nth(index)).toBeFocused();
     await expect(page.locator('[data-context="selected"]').nth(index)).toHaveCSS('outline-style', 'solid');
   }
@@ -78,8 +87,14 @@ for (const width of [320, 360, 390, 430, 768, 1024, 1280, 1440, 1920]) {
     for (const [id] of expectedProjects) {
       const preview = page.locator(`[data-project="${id}"]`);
       expect((await preview.boundingBox())!.width).toBeGreaterThan(100);
-      await expect(preview.locator('figure')).toHaveAttribute('aria-hidden', 'true');
-      await expect(preview.locator('figcaption')).toContainText('Abstract study');
+      await expect(preview).toHaveAttribute('data-media', 'real');
+      if (id === 'motion-lab') {
+        await expect(preview.locator('.video-frame')).toHaveAttribute('aria-hidden', 'true');
+        await expect(preview.locator('video')).toHaveAttribute('preload', 'none');
+      } else {
+        await expect(preview.getByRole('img')).toHaveAttribute('alt', /.+/);
+      }
+      await expect(preview).not.toContainText('Abstract study');
     }
     if (width === 1440 || width === 320) {
       const first = page.locator('[data-context="selected"]').first();
@@ -93,17 +108,17 @@ for (const width of [320, 360, 390, 430, 768, 1024, 1280, 1440, 1920]) {
   });
 }
 
-test('reduced motion and touch retain usable previews', async ({ page, browser }) => {
+test('reduced motion and touch retain usable previews', async ({ page, browser, baseURL }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(route());
   const first = page.locator('[data-context="selected"]').first();
   await first.locator('a').focus();
-  await expect(first.locator('svg')).toHaveCSS('transform', 'none');
-  await expect(first.locator('svg')).toHaveCSS('transition-duration', '0s');
+  await expect(first.locator('img')).toHaveCSS('transform', 'none');
+  await expect(first.locator('img')).toHaveCSS('transition-duration', '0s');
   await expect(first.locator('.exhibit-arrow')).toHaveCSS('transform', 'none');
-  const context = await browser.newContext({ hasTouch: true, isMobile: true, viewport: { width: 320, height: 640 } });
+  const context = await browser.newContext({ baseURL, hasTouch: true, isMobile: true, viewport: { width: 320, height: 640 } });
   const touchPage = await context.newPage();
-  await touchPage.goto(`http://127.0.0.1:4321${route()}`);
+  await touchPage.goto(route());
   const media = touchPage.locator('[data-context="selected"] .exhibit-media').first();
   await media.scrollIntoViewIfNeeded();
   const bounds = (await media.boundingBox())!;

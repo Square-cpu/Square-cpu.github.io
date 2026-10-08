@@ -1,6 +1,12 @@
 ---
 title: "WFC Procedural Generator"
-summary: "A procedural generator. TODO: project description."
+summary: "A directed Wave Function Collapse system for generating 3D environments from local edge and socket constraints."
+year: 2026
+context: "Personal project"
+categories: ["Procedural generation"]
+cover:
+  src: "../../assets/projects/wfc/cover.png"
+  alt: "Generated terrain with green modular landforms and blue water, produced by the directed Wave Function Collapse system."
 featured: true
 featuredOrder: 1
 draft: false

@@ -1,0 +1,101 @@
+---
+import { Image, getImage } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import type { FeaturedVariant } from '../../data/featured-presentation';
+import { withBase } from '../../lib/paths';
+
+interface Props { project: CollectionEntry<'projects'>; variant: FeaturedVariant; }
+const { project, variant } = Astro.props;
+const { cover, previewVideo } = project.data;
+const sizes: Record<FeaturedVariant, string> = {
+  feature: '(min-width: 1600px) 928px, (min-width: 768px) 58vw, 92vw',
+  portrait: '(min-width: 1600px) 736px, (min-width: 1024px) 46vw, (min-width: 768px) 54vw, 92vw',
+  open: '(min-width: 1600px) 480px, (min-width: 768px) 30vw, 92vw',
+  ribbon: '(min-width: 1600px) 608px, (min-width: 768px) 40vw, 92vw',
+  orbital: '(min-width: 1600px) 848px, (min-width: 768px) 54vw, 92vw',
+  compact: '(min-width: 1600px) 480px, (min-width: 768px) 30vw, 92vw',
+};
+const widths = cover ? [...new Set([320, 640, 960, 1280, cover.src.width].filter(width => width <= cover.src.width))].sort((a, b) => a - b) : [];
+const poster = previewVideo && cover ? await getImage({ src: cover.src, width: cover.src.width, format: 'webp', quality: 90 }) : undefined;
+---
+{cover && (previewVideo ? (
+  <figure class="project-media video-preview" data-project-video data-title={project.data.title}>
+    <div class="video-frame" aria-hidden="true">
+      <Image class="video-poster" src={cover.src} alt="" format="webp" quality={90} widths={widths} sizes={sizes[variant]} layout="constrained" loading="lazy" decoding="async" />
+      <video muted playsinline preload="none" width={previewVideo.width} height={previewVideo.height} data-src={withBase(previewVideo.src)} data-poster={poster?.src} tabindex="-1"></video>
+    </div>
+    <button class="preview-toggle" type="button" aria-label={`Play ${project.data.title} preview`} hidden>Play preview</button>
+  </figure>
+) : (
+  <figure class:list={['project-media', { 'terrain-media': variant === 'feature' }]}>
+    <Image src={cover.src} alt={cover.alt} format="webp" quality={90} widths={widths} sizes={sizes[variant]} layout="constrained" loading="lazy" decoding="async" />
+  </figure>
+))}
+
+<script>
+  for (const preview of document.querySelectorAll<HTMLElement>('[data-project-video]')) {
+    const video = preview.querySelector('video');
+    const toggle = preview.querySelector<HTMLButtonElement>('button');
+    if (!video || !toggle) continue;
+
+    const preference = matchMedia('(prefers-reduced-motion: reduce)');
+    let visible = false;
+    let userPaused = false;
+
+    const update = () => {
+      const playing = !video.paused && !video.ended;
+      preview.classList.toggle('is-playing', playing);
+      toggle.textContent = playing ? 'Pause preview' : 'Play preview';
+      toggle.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} ${preview.dataset.title} preview`);
+    };
+    const play = () => {
+      if (!video.getAttribute('src')) {
+        video.poster = video.dataset.poster ?? '';
+        video.src = video.dataset.src ?? '';
+      }
+      video.muted = true;
+      video.loop = !preference.matches;
+      video.autoplay = !preference.matches;
+      void video.play().catch(update);
+    };
+    const sync = () => {
+      if (visible && !document.hidden && !preference.matches && !userPaused) play();
+      else video.pause();
+    };
+    toggle.hidden = false;
+    toggle.addEventListener('click', () => {
+      if (video.paused) { userPaused = false; play(); }
+      else { userPaused = true; video.pause(); }
+    });
+    video.addEventListener('play', update);
+    video.addEventListener('pause', update);
+    video.addEventListener('ended', update);
+    preference.addEventListener('change', () => {
+      video.loop = !preference.matches;
+      video.autoplay = false;
+      sync();
+    });
+    document.addEventListener('visibilitychange', sync);
+    // Keep media unrequested until it is visible; no-JavaScript visitors retain the poster.
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        sync();
+      }, { threshold: 0.01 });
+      observer.observe(preview);
+    }
+  }
+</script>
+
+<style>
+  .project-media { position: relative; margin: 0; height: 100%; }
+  .project-media :global(img), video { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .terrain-media :global(img) { object-fit: cover; }
+  .video-frame { height: 100%; }
+  video { position: absolute; inset: 0; visibility: hidden; }
+  .is-playing video { visibility: visible; }
+  .is-playing :global(.video-poster) { visibility: hidden; }
+  .preview-toggle { position: absolute; right: var(--space-3); bottom: var(--space-3); z-index: var(--layer-media-control); min-height: var(--size-touch-target); padding: var(--space-2) var(--space-3); border: var(--border-thin) solid var(--color-border-strong); border-radius: var(--radius-xs); background: var(--color-surface); color: var(--color-text); font-size: var(--text-ui); cursor: pointer; }
+  .preview-toggle:hover { background: var(--color-surface-2); }
+  .preview-toggle[hidden] { display: none; }
+</style>

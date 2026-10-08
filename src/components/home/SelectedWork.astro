@@ -3,6 +3,7 @@ import { getFeaturedProjects } from '../../lib/projects';
 import { withBase } from '../../lib/paths';
 import ProjectPreview from '../projects/ProjectPreview.astro';
 import ProjectStudy from '../projects/ProjectStudy.astro';
+import ProjectMedia from '../projects/ProjectMedia.astro';
 import { featuredPresentation, defaultFeaturedPresentation } from '../../data/featured-presentation';
 const projects = await getFeaturedProjects();
 ---
@@ -15,7 +16,7 @@ const projects = await getFeaturedProjects();
     {projects.map((project, index) => {
       const presentation = featuredPresentation[project.id] ?? defaultFeaturedPresentation;
       return <ProjectPreview project={project} context="selected" index={index} variant={presentation.variant}>
-        <ProjectStudy slot="media" study={presentation.study} />
+        {project.data.cover ? <ProjectMedia slot="media" project={project} variant={presentation.variant} /> : <ProjectStudy slot="media" study={presentation.study} />}
       </ProjectPreview>;
     })}
   </div>

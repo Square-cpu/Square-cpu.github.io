@@ -8,15 +8,15 @@ import SectionLabel from '../common/SectionLabel.astro';
   <div class="journey layout-grid">
     <div class="journey-introduction">
       <h2 id="experiences-heading">Learning environments</h2>
-      <p class="muted">A working outline. Dates, context, and sequence to be confirmed.</p>
+      <p class="muted">Programs and communities where I’ve learned and built things.</p>
     </div>
-    <ul class="journey-path" aria-label="Provisional experience entries">
+    <ul class="journey-path" aria-label="Learning programs and communities">
       {experiencePreview.map(entry => (
         <li>
-          <p class="journey-date eyebrow">{entry.year ?? 'Date to add'}</p>
+          <p class="journey-date eyebrow">{entry.period}</p>
           <div class="journey-entry">
-            <h3>{entry.name}</h3>
-            <p class="muted">{entry.context}</p>
+            <h3>{entry.title}</h3>
+            <p class="muted">{entry.summary}</p>
           </div>
         </li>
       ))}
@@ -41,8 +41,11 @@ import SectionLabel from '../common/SectionLabel.astro';
     .journey { row-gap: var(--space-7); }
     .journey-introduction { grid-column: 1 / 6; }
     .journey-path, .journey-link { grid-column: 6 / -1; }
-    li { grid-template-columns: minmax(6rem, 1fr) minmax(0, 3fr); gap: var(--space-5); padding-block: var(--space-5) var(--space-6); }
+    li { padding-block: var(--space-5) var(--space-6); }
     li:nth-child(2) { margin-left: var(--space-7); }
     li:nth-child(3) { margin-left: var(--space-5); }
+  }
+  @media (min-width: 64rem) {
+    li { grid-template-columns: minmax(6rem, 1fr) minmax(0, 3fr); gap: var(--space-5); }
   }
 </style>

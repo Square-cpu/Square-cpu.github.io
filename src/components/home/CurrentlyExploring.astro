@@ -6,7 +6,6 @@ import { exploringTopics } from '../../data/exploring';
   <details>
     <summary aria-label={exploringTopics.map(({ title }) => title).join(', ')}><span class="topic-line">{exploringTopics.map(({ title }, index) => <span class="topic-name">{title}{index < exploringTopics.length - 1 && <span class="separator" aria-hidden="true">{' · '}</span>}</span>)}</span><span class="indicator" aria-hidden="true">↓</span></summary>
     <div class="exploring-layer">
-    <p class="layer-note eyebrow">Open questions / provisional directions</p>
     <ul class="topics">
       {exploringTopics.map((topic) => (
         <li>

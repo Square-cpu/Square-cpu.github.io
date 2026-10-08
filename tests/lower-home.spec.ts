@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 import process from 'node:process';
-import { contactPlaceholderLabels, site } from '../src/data/site';
+import { site } from '../src/data/site';
 import { experiencePreview } from '../src/data/experiences';
-import { recognitionEntries } from '../src/data/recognition';
+import { getFeaturedRecognition } from '../src/data/recognition';
 
 const base = (process.env.BASE_PATH || '').replace(/\/$/, '');
 const route = (path = '/') => `${base}${path}`;
@@ -26,25 +26,22 @@ for (const [label, path, title] of destinations) {
   });
 }
 
-test('lower-page records remain provisional and contact values come only from supplied data', async ({ page }) => {
+test('lower-page records and contact values come from supplied data', async ({ page }) => {
   await page.goto(route());
   const experience = page.locator('.experience-preview');
-  await expect(experience).toContainText('sequence to be confirmed');
+  await expect(experience).not.toContainText(/TODO|to add|to be confirmed/i);
   await expect(experience.locator('li')).toHaveCount(experiencePreview.length);
-  for (const entry of experiencePreview) await expect(experience).toContainText(entry.name);
-  if (!recognitionEntries.some(entry => entry.featured)) {
-    await expect(page.locator('[data-recognition-placeholder]')).toContainText('TODO: add verified awards');
-    await expect(page.locator('.recognition-record tbody tr')).toHaveCount(1);
+  for (const entry of experiencePreview) {
+    await expect(experience).toContainText(entry.title);
+    await expect(experience).toContainText(entry.period!);
+    await expect(experience).toContainText(entry.summary);
   }
+  await expect(page.locator('.recognition-record tbody tr')).toHaveCount(getFeaturedRecognition().length);
+  await expect(page.locator('.recognition-preview')).not.toContainText(/TODO|to add|to come/i);
   const contacts = page.locator('.footer-contact-list');
-  if (site.contactLinks.length) {
-    expect(await contacts.locator('a').evaluateAll(links => links.map(link => link.getAttribute('href')))).toEqual(site.contactLinks.map(link => link.href));
-  } else {
-    await expect(contacts.locator('a')).toHaveCount(0);
-    await expect(contacts.locator('li')).toHaveCount(contactPlaceholderLabels.length);
-    for (const label of contactPlaceholderLabels) await expect(contacts).toContainText(label);
-    expect(await contacts.locator('li').allTextContents()).toEqual(contactPlaceholderLabels.map(label => `${label}To add`));
-  }
+  await expect(contacts.locator('li')).toHaveCount(3);
+  expect(await contacts.locator('a').evaluateAll(links => links.map(link => link.getAttribute('href')))).toEqual(site.contactLinks.map(link => link.href));
+  await expect(page.locator('.home-footer')).not.toContainText(/TODO|to add/i);
 });
 
 test('keyboard traversal skips decorative artifacts and reaches every preview continuation', async ({ page }) => {
@@ -100,16 +97,16 @@ for (const width of [320, 360, 390, 430, 768, 1024, 1280, 1440, 1920]) {
   });
 }
 
-test('Playground feedback respects reduced motion and remains usable without JavaScript', async ({ page, browser }) => {
+test('Playground feedback respects reduced motion and remains usable without JavaScript', async ({ page, browser, baseURL }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(route());
   await page.getByRole('link', { name: 'Visit the playground', exact: true }).focus();
   const wire = page.locator('.artifact-wire svg');
   await expect(wire).toHaveCSS('transform', 'none');
   await expect(wire).toHaveCSS('transition-duration', '0s');
-  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 320, height: 800 } });
+  const context = await browser.newContext({ baseURL, javaScriptEnabled: false, viewport: { width: 320, height: 800 } });
   const staticPage = await context.newPage();
-  await staticPage.goto(`http://127.0.0.1:4321${route()}`);
+  await staticPage.goto(route());
   await expect(staticPage.locator('.workbench figure')).toHaveCount(4);
   await staticPage.getByRole('link', { name: 'Visit the playground', exact: true }).click();
   await expect(staticPage.getByRole('heading', { level: 1 })).toHaveText('Playground');

@@ -19,7 +19,7 @@ test('Index handles keyboard focus, Escape, scroll locking, and ordinary links',
   await expect(page.getByRole('button', { name: 'Close site index' })).toBeFocused();
   await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
   await page.keyboard.press('Shift+Tab');
-  await expect(dialog.getByRole('link', { name: 'About', exact: true })).toBeFocused();
+  await expect(dialog.getByRole('link', { name: 'YouTube (external destination)', exact: true })).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(page.getByRole('button', { name: 'Close site index' })).toBeFocused();
   await page.keyboard.press('Escape');
@@ -40,7 +40,7 @@ test('Exploring topics stay visible when collapsed and expand with the keyboard'
   await page.goto(route());
   const details = page.locator('details');
   const summary = details.locator('summary');
-  await expect(summary).toContainText('Procedural generation · Animation · Creative coding');
+  await expect(summary).toContainText('Procedural Generation · Animation · Machine Learning');
   await expect(details.locator('.topics')).not.toBeVisible();
   await summary.focus();
   await page.keyboard.press('Enter');
@@ -103,10 +103,10 @@ test('reduced motion disables decorative motion', async ({ page }) => {
   await expect(page.locator('summary .indicator')).toHaveCSS('transition-duration', '0s');
 });
 
-test('navigation and topic disclosure remain available without JavaScript', async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
+test('navigation and topic disclosure remain available without JavaScript', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
   const page = await context.newPage();
-  await page.goto(`http://127.0.0.1:4321${route()}`);
+  await page.goto(route());
   await page.getByRole('link', { name: 'INDEX', exact: true }).click();
   await expect(page.locator('#footer-index')).toBeInViewport();
   await page.locator('summary').click();
@@ -159,8 +159,8 @@ test('Index remains navigable on a short mobile screen', async ({ page }) => {
   await page.goto(route());
   await page.locator('#index-trigger').click();
   await page.keyboard.press('Shift+Tab');
-  await expect(page.getByRole('link', { name: 'About', exact: true })).toBeFocused();
-  await expect(page.getByRole('link', { name: 'About', exact: true })).toBeInViewport();
+  await expect(page.getByRole('dialog').getByRole('link', { name: 'YouTube (external destination)', exact: true })).toBeFocused();
+  await expect(page.getByRole('dialog').getByRole('link', { name: 'YouTube (external destination)', exact: true })).toBeInViewport();
   await page.keyboard.press('Escape');
   await expect(page.locator('#index-trigger')).toBeFocused();
 });

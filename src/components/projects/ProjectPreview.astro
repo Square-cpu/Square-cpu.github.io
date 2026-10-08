@@ -5,15 +5,17 @@ import type { FeaturedVariant } from '../../data/featured-presentation';
 interface Props { project: CollectionEntry<'projects'>; context?: 'selected' | 'archive'; index?: number; variant?: FeaturedVariant; }
 const { project, context = 'archive', index, variant = 'open' } = Astro.props;
 const { data } = project;
+const previewMetadata = [data.context, ...data.categories, data.result].filter(Boolean);
+const mediaDimensions = data.previewVideo ?? data.cover?.src;
 ---
 {context === 'selected' ? (
-  <article class:list={['exhibit', `exhibit-${variant}`]} data-context="selected" data-project={project.id} data-variant={variant}>
+  <article class:list={['exhibit', `exhibit-${variant}`]} data-context="selected" data-project={project.id} data-variant={variant} data-media={data.cover ? 'real' : 'study'} style={mediaDimensions && `--media-aspect: ${mediaDimensions.width} / ${mediaDimensions.height}`}>
     <div class="exhibit-media"><slot name="media" /></div>
     <div class="exhibit-copy">
       <p class="exhibit-meta eyebrow"><span>{index !== undefined && `04.${index + 1}`}</span>{data.year && <span>{data.year}</span>}</p>
       <h3><a href={withBase(`projects/${project.id}/`)} aria-label={`Open project: ${data.title}`}><span>{data.shortTitle ?? data.title}</span><span class="exhibit-arrow" aria-hidden="true">→</span></a></h3>
       <p class="exhibit-summary muted">{data.summary}</p>
-      {data.categories.length > 0 && <p class="eyebrow exhibit-categories">{data.categories.join(' / ')}</p>}
+      {previewMetadata.length > 0 && <p class="eyebrow exhibit-categories">{previewMetadata.join(' / ')}</p>}
     </div>
   </article>
 ) : (
@@ -51,6 +53,11 @@ const { data } = project;
   .exhibit-ribbon .exhibit-media { aspect-ratio: 3 / 2; background: var(--color-bg); border-radius: 0; }
   .exhibit-orbital .exhibit-media { aspect-ratio: 4 / 3; background: var(--color-bg); border-radius: 0; }
   .exhibit-compact .exhibit-media { aspect-ratio: 2 / 1; background: var(--color-surface-2); }
+  /* Preserve complete diagrams/interfaces within the existing exhibition spans. */
+  .exhibit-portrait[data-media="real"] .exhibit-media,
+  .exhibit-open[data-media="real"] .exhibit-media,
+  .exhibit-orbital[data-media="real"] .exhibit-media,
+  .exhibit-compact[data-media="real"] .exhibit-media { aspect-ratio: var(--media-aspect); }
   @media (min-width: 48rem) {
     .exhibit-feature { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--grid-gap); align-items: center; }
     .exhibit-feature .exhibit-copy { grid-row: 1; grid-column: 1; padding-right: var(--space-5); }

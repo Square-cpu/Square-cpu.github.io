@@ -6,8 +6,8 @@ export interface ExploringTopic {
 }
 
 export const exploringTopics: ExploringTopic[] = [
-  // Provisional directions, not a record of completed work.
-  { title: 'Procedural generation', description: 'How simple rules can produce structures, variation, and unexpected results.' },
-  { title: 'Animation', description: 'Timing, rhythm, and the small changes that make movement feel considered.' },
-  { title: 'Creative coding', description: 'Code as a way to sketch, try a visual idea, and see where it leads.' },
+  // Current interests supplied by Arthur, not a record of completed work.
+  { title: 'Procedural Generation', description: 'Exploring how complex environments and structures can emerge from relatively small sets of rules, currently through Wave Function Collapse and terrain-generation experiments.' },
+  { title: 'Animation', description: 'Studying timing, spacing, and how motion can make both visual work and interfaces feel clearer, more expressive, and more alive.' },
+  { title: 'Machine Learning', description: 'Exploring how models can extract useful patterns from real-world data, especially when combined with visual, spatial, or geospatial information.' },
 ];

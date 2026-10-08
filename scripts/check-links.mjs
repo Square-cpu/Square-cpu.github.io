@@ -15,8 +15,11 @@ await walk(root);
 const failures = [];
 for (const file of files) {
   const html = await readFile(file, 'utf8');
-  for (const match of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
-    const href = match[1];
+  const urls = [...html.matchAll(/(?:href|src|poster)="([^"]+)"/g)].map(match => match[1]);
+  for (const match of html.matchAll(/srcset="([^"]+)"/g)) {
+    urls.push(...match[1].split(',').map(candidate => candidate.trim().split(/\s+/)[0]));
+  }
+  for (const href of urls) {
     if (/^(https?:|mailto:|tel:|data:|\/\/)/.test(href)) continue;
     const url = new URL(href, `https://local.invalid${base}/${file.slice(root.length + 1).replaceAll('\\', '/')}`);
     if (base && !url.pathname.startsWith(`${base}/`)) {

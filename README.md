@@ -1,6 +1,6 @@
 # Arthur Milander — portfolio foundation
 
-Phase 2E: the complete V1 homepage has received a responsive and visual polish pass. The Phase 1 static Astro 7 foundation, Phase 2A visual system and Header/Index, Phase 2B opening, Phase 2C exhibition, and Phase 2D lower homepage remain intact. Factual content and real media remain provisional. TypeScript, plain CSS, six placeholder project entries, and isolated vanilla-JavaScript navigation remain intact. No UI framework, animation library, or backend.
+Phase 3C/3D: the approved Phase 2 homepage now uses Arthur's supplied opening copy, current interests, six project summaries and real media, three learning experiences, five recognition groups, and public external links. The static Astro 7 architecture and Phase 2 compositions remain intact. Dedicated-page design/copy, deeper case studies, and Playground content remain future work. TypeScript, plain CSS, Content Collections, and isolated vanilla JavaScript remain the foundation. No UI framework, animation library, or backend.
 
 ## Local development
 
@@ -23,6 +23,7 @@ npm run preview
 src/
   content.config.ts         Validated Content Layer collection
   content/projects/*.md    Project frontmatter and case-study bodies
+  assets/projects/         Permanent project images and video poster
   data/                    Site/contact links and exploring topics
   lib/                     Base-aware paths and collection queries
   components/
@@ -36,6 +37,7 @@ src/
   pages/                   Main routes and dynamic project pages
   styles/                  Central tokens and global primitives
 public/favicon.svg         Temporary AM favicon
+public/media/projects/     Permanent project video derivative
 tests/                     Browser regression checks
 scripts/check-links.mjs    Built local links, assets, and anchors
 docs/deploy.yml.example    Ready-to-enable official Pages workflow
@@ -45,7 +47,7 @@ docs/deploy.yml.example    Ready-to-enable official Pages workflow
 
 Projects use Astro's current `glob()` loader in `src/content.config.ts`, `getCollection()`, and `render()`. Files generate IDs used by `/projects/[...slug]`; the rest parameter also supports nested IDs later. All three project surfaces exclude drafts. The homepage sorts featured entries by `featuredOrder`; the archive sorts known years descending, then titles, placing unknown years last.
 
-Year and role are optional because neither has been supplied. Technologies, categories, links, and status stay empty/unset rather than implying facts. The homepage omits unknown metadata; the archive and project pages retain their explicit placeholders. All six entries intentionally publish as clearly marked placeholders; `draft: true` removes an entry from all generated routes and lists.
+Year and role remain optional. The six featured entries contain supplied summaries and verified context; recorded project years are 2026 for WFC, Pasture Intelligence, and Motion Lab, and 2025 for Asteroid Watchers. ENEM and iFood currently omit project year metadata. The supplied 2026 iFood camp result is preserved in the Behring experience notes. Supplied technologies are recorded for Pasture Intelligence and ENEM without adding homepage technology lists. Optional `context` and `result` fields hold portable project facts. Case-study bodies still explicitly request future content; `draft: true` removes an entry from all generated routes and lists.
 
 Add a project by creating a Markdown file with `title` and `summary`. Add `featured: true` and `featuredOrder` for homepage inclusion. Optional fields are documented directly in the schema. `cover.src` resolves a local image relative to the content file and requires descriptive `cover.alt`. Render real images through Astro's `Image` component with meaningful alt text; mark truly decorative images explicitly in their own components.
 
@@ -81,11 +83,11 @@ Links retain underlines and clear keyboard outlines. Existing continuation/back 
 
 Hero and About remain separate components but share an asymmetric grid relationship without a dividing rule. The name uses an intentional two-line setting, with a 60–88px mobile scale and 72–120px desktop scale. At 768px+ the Hero pairs seven columns of copy with a five-column visual region. Below that, the study stacks and becomes smaller, aligned to the right. About offsets its lead text and supporting paragraph on desktop and follows a simple reading order on mobile.
 
-Provisional Hero/About text lives in `src/data/opening.ts`, based only on supplied interests. Replace it there without changing layout. It is a working introduction, not a completed biography. The dedicated About page remains a placeholder.
+Hero/About text lives in `src/data/opening.ts`. Phase 3A uses Arthur's supplied introduction without changing layout. Replace it there when needed. The dedicated About page remains a placeholder.
 
 `HeroVisual.astro` is a replaceable, decorative SVG study: fourteen tiles in a four-by-four construction with two empty corners, four simple line motifs, small edge highlights, and existing theme tokens. It uses no JavaScript or new assets. Fine-pointer hover shifts only a tile's linework by 2px; reduced motion disables that shift. The static composition works on touch and without JavaScript. The entire study is `aria-hidden` with no focusable controls because it conveys no factual content.
 
-Currently Exploring keeps native `details`/`summary`. All topics remain visible while collapsed, arranged as separate lines on narrow screens. The expanded layer uses three columns on desktop and stacked ruled entries on mobile. Descriptions are provisional questions/directions, not achievements. `src/data/exploring.ts` retains title, description, optional link, and optional ISO last-updated date. No dates or links have been invented. The summary has an explicit topic-based accessible name; the decorative arrow rotates with the native open state. A feature-gated [CSS disclosure layer](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::details-content) fades content on supported browsers; others use ordinary native disclosure. Motion durations come from the existing tokens and become zero under reduced motion.
+Currently Exploring keeps native `details`/`summary`. All topics remain visible while collapsed, arranged as separate lines on narrow screens. The expanded layer uses three columns on desktop and stacked ruled entries on mobile. Phase 3A supplies Procedural Generation, Animation, and Machine Learning with Arthur's descriptions. `src/data/exploring.ts` retains title, description, optional link, and optional ISO last-updated date. No dates or links have been invented. The summary has an explicit topic-based accessible name; the decorative arrow rotates with the native open state. A feature-gated [CSS disclosure layer](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::details-content) fades content on supported browsers; others use ordinary native disclosure. Motion durations come from the existing tokens and become zero under reduced motion.
 
 Phase 2B screenshots live in `artifacts/phase-2b/`. For each width 320/360/390/430/768/1280/1440/1920, tests capture `home-{width}.png` (full page), `hero-{width}.png` (first viewport), `opening-{width}.png` (the entire first three sections), `about-{width}.png`, `exploring-collapsed-{width}.png`, and `exploring-expanded-{width}.png` (the full expanded section). The opening tests also cover keyboard and touch disclosure, full description visibility, decorative reduced-motion feedback, overflow, and sticky-header continuity. No dependencies were added in Phase 2B.
 
@@ -103,15 +105,15 @@ Each preview has one descriptive project link within its `h3`. Its stretched hit
 
 ## Phase 2D lower homepage
 
-Experience resets the exhibition grid into a heading and three stepped, horizontally ruled entries. `src/data/experiences.ts` holds the provisional Behring Academy, TKS, and Future Lab outline from existing content. Dates and sequence are explicitly unconfirmed; no chronology or achievements have been invented. Add verified years and context there later. This data is currently homepage-only; the dedicated Experiences page remains unchanged.
+Experience resets the exhibition grid into a heading and three stepped, horizontally ruled entries. Phase 3C populated the existing composition with supplied Behring Academy, The Knowledge Society (TKS), and Future Lab periods and summaries. `src/data/experiences.ts` now exports reusable full records and a featured selection; richer notes are stored for later dedicated-page work. The dedicated Experiences page remains unchanged.
 
 Playground arranges four decorative slots within the grid: a frame strip, wire form, line study, and tile fragment. `PlaygroundArtifact.astro` uses small SVG constructions with existing palette tokens. Visible “Placeholder” captions and introductory text distinguish them from Arthur's actual work. Mobile retains the same reading order, pairing the two smaller studies diagonally between the frame strip and offset tile fragment. The wire form rotates 3 degrees and shifts 4px on fine-pointer hover or when the section's continuation link has focus; reduced motion removes both. Decorative media creates no focus stops. No client code is required.
 
-Recognition uses a compact semantic table beside its heading. `src/data/recognition.ts` supports name, result, optional year/level/link, and featured selection. The array stays empty until verified records are supplied; the homepage shows an explicit TODO row instead of invented award history. The dedicated Awards page remains unchanged.
+Recognition uses a compact semantic table beside its heading. Phase 3C populated five featured groups from `src/data/recognition.ts`, which now holds grouped results, optional year/period/level/project/detail, category, ordering, and compact summaries. Dates sit beside their results rather than in a separate column, keeping multi-year groups precise. The dedicated Awards page remains unchanged.
 
-Only the homepage receives the new full-width footer treatment. “Want to talk?” sits opposite the contact area; the final line contains Arthur's name, the build year, and a replaceable decorative `FooterMark.astro`. `site.contactLinks` remains the source of verified destinations. With no supplied values, the footer variant of `ContactLinks` renders plain Email/GitHub/LinkedIn/YouTube labels marked “To add”, never fake links. Default contact rendering in the Index and dedicated pages is preserved. The no-JavaScript footer Index remains available without repeating navigation for ordinary visitors.
+Only the homepage receives the full-width footer treatment. “Want to talk?” sits opposite the contact area; the final line contains Arthur's name, the build year, and a replaceable decorative `FooterMark.astro`. `site.contactLinks` supplies the public GitHub, LinkedIn, and YouTube destinations added in Phase 3D. No email is published. Shared contact content also appears in the Index and About without changing their layouts. The no-JavaScript footer Index remains available without repeating navigation for ordinary visitors.
 
-`tests/lower-home.spec.ts` checks the three preview destinations under the configured base, provisional records and contact values, keyboard traversal, decorative semantics, reduced motion, no-JavaScript behavior, and overflow. Captures at 320/360/390/430/768/1024/1280/1440/1920px live in `artifacts/phase-2d/`: `experience-{width}.png`, `playground-{width}.png`, `recognition-{width}.png`, `footer-{width}.png`, `lower-home-{width}.png`, and `home-{width}.png`. `playground-hover-1440.png` captures the optional feedback. Section/lower-page crops hide fixed navigation for capture only; full-page images retain the actual header. No dependencies were added.
+`tests/lower-home.spec.ts` checks the three preview destinations under the configured base, supplied records and contact values, keyboard traversal, decorative semantics, reduced motion, no-JavaScript behavior, and overflow. Captures at 320/360/390/430/768/1024/1280/1440/1920px live in `artifacts/phase-2d/`: `experience-{width}.png`, `playground-{width}.png`, `recognition-{width}.png`, `footer-{width}.png`, `lower-home-{width}.png`, and `home-{width}.png`. `playground-hover-1440.png` captures the optional feedback. Section/lower-page crops hide fixed navigation for capture only; full-page images retain the actual header. No dependencies were added.
 
 ## Browser checks
 
@@ -121,7 +123,7 @@ npm run build
 npm test
 ```
 
-Alternatively set `PLAYWRIGHT_CHANNEL=msedge` or `chrome` to use an installed browser. In PowerShell: `$env:PLAYWRIGHT_CHANNEL = 'msedge'`. Tests start a fresh production preview automatically. They cover keyboard navigation, focus containment/restoration, Escape, close button, disclosure, no-JavaScript fallback, all routes, reduced motion, sticky header, active sections, and widths 320/360/390/430/768/1280/1440/1920. A short 320×568 viewport checks dialog scrolling. Screenshots go to ignored `artifacts/phase-2a/`: `page-{width}.png` (viewport), `home-{width}.png` (full page), `sticky-{width}.png` (after scrolling), and `index-{width}.png`. Failures go to `artifacts/test-results/`.
+Alternatively set `PLAYWRIGHT_CHANNEL=msedge` or `chrome` to use an installed browser. In PowerShell: `$env:PLAYWRIGHT_CHANNEL = 'msedge'`. Tests start a fresh production preview automatically. Set `PLAYWRIGHT_PORT` (for example, `4323`) if a development server already occupies 4321. They cover keyboard navigation, focus containment/restoration, Escape, close button, disclosure, no-JavaScript fallback, all routes, reduced motion, sticky header, active sections, and widths 320/360/390/430/768/1024/1280/1440/1920. A short 320×568 viewport checks dialog scrolling. Screenshots go to ignored phase-specific `artifacts/` folders; failures go to `artifacts/test-results/`.
 
 ## GitHub Pages — enable when the repository is known
 
@@ -164,6 +166,30 @@ Currently Exploring now uses wrapping flex groups with token-based gaps around i
 
 Phase 2E verification: Astro/TypeScript check passed without diagnostics, all 12 routes built, local link verification passed at `/` and `/portfolio-test`, and all 68 Playwright tests passed under both bases. Keyboard and reduced-motion states were also visually reviewed. The root build was restored after subpath verification.
 
+## Phase 3A/3B copy and real project media
+
+`ProjectMedia.astro` fills the existing preview media slot from validated `cover` and optional `previewVideo` content. `SelectedWork` retains `ProjectStudy` as a fallback when a future featured project has no real cover. Homepage variants and ordering remain separate from content in the existing presentation map. The archive layout and individual project-page architecture are unchanged; their existing basic cover area can now show the supplied image.
+
+Permanent images live in `src/assets/projects/`, with the Motion Lab MP4 in `public/media/projects/motion-lab/`. [The complete source-to-production mapping](docs/project-media.md) documents every copied screenshot and the video derivative. Components never reference `artifacts/phase-3_images/`. Originals remain unchanged. Extra ENEM, Asteroid Watchers, and iFood screenshots are stored for future case studies without being imported into the homepage.
+
+Astro generates responsive WebP images at quality 90, with intrinsic dimensions, lazy loading, and widths capped at the source dimensions. [Astro's image pipeline](https://docs.astro.build/en/guides/images/) handles imported assets and deployment-base URLs. WFC fills its existing feature region; scientific plots and UI previews retain their complete image through `contain` and source-specific proportions. Five still images have descriptive alt text. The Motion Lab preview is decorative because its surrounding title and summary explain its purpose.
+
+The silent, cropped Motion Lab recording loads only when visible. It plays muted, loops, and uses `playsinline`; a keyboard-accessible Play/Pause control lets visitors stop the motion. Leaving the viewport or backgrounding the tab pauses playback. Reduced-motion visitors receive the real poster without automatic playback or downloading the video; optional manual playback does not loop. Without JavaScript, the poster remains and the unavailable control is hidden. No dependencies were added.
+
+`tests/real-media.spec.ts` checks supplied copy, all six real previews, alt text and responsive asset paths, delayed video loading, manual pause, live reduced-motion changes, no-JavaScript posters, and overflow at all nine widths. Captures live in `artifacts/phase-3ab/`, with subpath captures in `base/`. Phase 2 sections outside the supplied copy/media scope remain intact.
+
+## Phase 3C/3D experience, recognition, and public links
+
+Experience records separate the homepage `summary` from future-page `highlights`. Behring Academy (2024–2026), TKS (2025–2026), and Future Lab (2026) are the only featured entries, selected by `featured` and `featuredOrder`. The supplied PIC Jr./Hotel de Hilbert context is a non-featured experience with an approximate duration and no invented year. Future Lab uses only Arthur's supplied context; no external organization or URL is inferred.
+
+Recognition stores 13 groups and 29 result records across Computing, Mathematics, Science, Languages, Projects & Fairs, and School Recognition. The homepage selects OBI, OBMEP, NASA Space Apps, OBOI, and ONC in that order. OBI's 30th-place result is explicitly scoped to the 2024 Programming Level 1 final ranking. OBMEP's regional bronze remains in full data only. UFU and CCL retain absent years. Grau Ouro uses the supplied 2016–2025 period. Hotel de Hilbert remains an experience, not an award.
+
+`BrandIcon.astro` contains three small local monochrome SVG marks using `currentColor`. They are decorative beside visible text, hidden from assistive technology, and create no focus stops. Contact links use ordinary same-tab anchors, the existing external arrow, visible focus, and minimum 44px targets. GitHub is `https://github.com/Square-cpu`, LinkedIn is `https://www.linkedin.com/in/arthur-milander/`, and YouTube is `https://www.youtube.com/@Square_SQ`. No email, phone, Instagram, Substack, photo, or private contact data was added. No dependencies or runtime JavaScript were added.
+
+`tests/home-content.spec.ts` checks featured filtering and ordering, exact supplied copy and periods, five recognition groups, scoped ranking, shared public URLs, decorative icons, placeholder removal, keyboard/touch access, and overflow. Captures at 320/390/768/1024/1440/1920px are in `artifacts/phase-3cd/`, with subpath captures in `base/`. The dedicated routes and previous homepage designs remain intact.
+
+Phase 3C/3D verification: Astro/TypeScript passed with zero diagnostics; all 12 routes built; link verification and all 91 Playwright tests passed at both `/` and `/portfolio-test`. Full-page and lower-section captures were reviewed at all six listed widths. Tablet experience dates sit above their entries to accommodate the supplied descriptions; desktop retains the original date/text columns and stepped alignment. The root build was restored after subpath verification.
+
 ## Remaining content and media work
 
-Final copy, verified project/experience/award facts, media, contact details, and advanced interactions remain future work. Supply the production origin and base before enabling deployment. Open Graph artwork remains to be designed.
+Deeper project case-study content and secondary media, dedicated-page design/copy, and real Playground content remain future work. UFU and CCL recognition years and exact PIC Jr./Hotel de Hilbert dates are not supplied. Advanced interactions and Open Graph artwork are separate later tasks. Supply the production origin and base before enabling deployment.

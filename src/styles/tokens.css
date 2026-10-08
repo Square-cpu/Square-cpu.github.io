@@ -55,6 +55,7 @@
   --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
   --layer-header: 10;
+  --layer-media-control: 1;
   --layer-overlay: 100;
   --layer-skip: 200;
 }

@@ -65,10 +65,10 @@ test('opening decorative feedback respects reduced motion', async ({ page }) => 
   expect(duration.split(',').every(value => value.trim() === '0s')).toBe(true);
 });
 
-test('touch opening retains the static visual and usable disclosure', async ({ browser }) => {
-  const context = await browser.newContext({ hasTouch: true, isMobile: true, viewport: { width: 320, height: 640 } });
+test('touch opening retains the static visual and usable disclosure', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ baseURL, hasTouch: true, isMobile: true, viewport: { width: 320, height: 640 } });
   const page = await context.newPage();
-  await page.goto(`http://127.0.0.1:4321${route}`);
+  await page.goto(route);
   await page.locator('summary').tap();
   await expect(page.locator('.topics')).toBeVisible();
   await page.locator('summary').tap();
